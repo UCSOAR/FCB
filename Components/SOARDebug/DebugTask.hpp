@@ -1,0 +1,82 @@
+/**
+ ******************************************************************************
+ * File Name          : DebugTask.hpp
+ * Description        :
+ ******************************************************************************
+ */
+#ifndef CUBE_SYSTEM_DEBUG_TASK_HPP_
+#define CUBE_SYSTEM_DEBUG_TASK_HPP_
+/* Includes ------------------------------------------------------------------*/
+#include "Task.hpp"
+#include "SystemDefines.hpp"
+#include "UARTDriver.hpp"
+#include "DataBroker.hpp"
+#include "IMUTask.hpp"
+#include "LSM6DSOTask.hpp"
+#include "mmc5983Task.hpp"
+#include "BaroTask07.hpp"
+#include "BaroTask11.hpp"
+
+
+/* Enums ------------------------------------------------------------------*/
+enum DEBUG_TASK_COMMANDS {
+  DEBUG_TASK_COMMAND_NONE = 0,
+  EVENT_DEBUG_RX_COMPLETE
+};
+
+
+
+/* Macros ------------------------------------------------------------------*/
+constexpr uint16_t DEBUG_RX_BUFFER_SZ_BYTES = 16;
+
+/* Class ------------------------------------------------------------------*/
+class DebugTask : public Task, public UARTReceiverBase {
+ public:
+  static DebugTask& Inst() {
+    static DebugTask inst;
+    return inst;
+  }
+
+  void InitTask();
+
+  // Interrupt receive callback
+  void InterruptRxData(uint8_t errors);
+
+//  bool debugEnabled = false;
+  static bool debugEnabled;
+
+ protected:
+  static void RunTask(void* pvParams) {
+    DebugTask::Inst().Run(pvParams);
+  }  // Static Task Interface, passes control to the instance Run();
+
+  void Run(void* pvParams);  // Main run code
+
+  void ConfigureUART();
+  void HandleDebugMessage(const char* msg);
+  // void HandleCommand(Command& cm);
+
+  bool ReceiveData();
+
+  // Helper functions
+  static int32_t ExtractIntParameter(const char* msg, uint16_t identifierLen);
+
+  // Member variables
+  uint8_t debugBuffer[DEBUG_RX_BUFFER_SZ_BYTES + 1];
+  uint8_t debugMsgIdx;
+  bool isDebugMsgReady;
+
+  uint8_t debugRxChar;  // Character received from UART Interrupt
+
+  UARTDriver* const kUart_;  // UART Driver
+
+ private:
+  DebugTask();                             // Private constructor
+  DebugTask(const DebugTask&);             // Prevent copy-construction
+  DebugTask& operator=(const DebugTask&);  // Prevent assignment
+};
+
+// In DebugTask.hpp - add this static method
+
+
+#endif  // CUBE_SYSTEM_DEBUG_TASK_HPP_

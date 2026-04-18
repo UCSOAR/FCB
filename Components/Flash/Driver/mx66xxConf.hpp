@@ -1,0 +1,10 @@
+#ifndef _MX66XX_CONFIG_H
+#define _MX66XX_CONFIG_H
+
+#define _MX66XX_SPI hqspi
+#define _MX66XX_CS_GPIO SPI_FLASH_CS_GPIO_Port
+#define _MX66XX_CS_PIN SPI_FLASH_CS_Pin
+#define _MX66XX_USE_FREERTOS 1
+#define _MX66XX_DEBUG 0
+
+#endif

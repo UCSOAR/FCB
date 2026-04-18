@@ -1,0 +1,54 @@
+/**
+ ******************************************************************************
+ * File Name          : main_system.hpp
+ * Description        : Header file for main_system.cpp, acts as an interface between
+ *  STM32CubeIDE and our application.
+ ******************************************************************************
+*/
+#ifndef MAIN_SYSTEM_HPP_
+#define MAIN_SYSTEM_HPP_
+
+/* Includes  ----------------------------------------------------------------------------*/
+#include "Mutex.hpp"
+// Board specific includes
+#include "stm32h7xx_hal.h"
+#include "stm32h7xx_ll_usart.h"
+#include "stm32h7xx_hal_rcc.h"
+#include "stm32h7xx_ll_dma.h"
+
+
+
+/* Interface Functions ------------------------------------------------------------------*/
+/* These functions act as our program's 'main' and any functions inside CubeIDE's main --*/
+void run_main();
+void run_StartDefaultTask();
+
+/* Global Functions ------------------------------------------------------------------*/
+
+/* Global Variable Interfaces ------------------------------------------------------------------*/
+/* All must be extern from main_system.cpp -------------------------------------------------*/
+
+
+/* Globally Accessible Drivers ------------------------------------------------------------------*/
+// UART Driver
+class UARTDriver;
+namespace Driver {
+    extern UARTDriver usart8;
+    extern UARTDriver uart7;
+}
+namespace UART {
+    constexpr UARTDriver* GPS = &Driver::uart7;
+    constexpr UARTDriver* Debug = &Driver::usart8;
+}
+
+
+/* System Handles ------------------------------------------------------------------*/
+extern CRC_HandleTypeDef hcrc;       // CRC - Hardware CRC System Handle
+
+namespace SystemHandles {
+    constexpr CRC_HandleTypeDef* CRC_Handle = &hcrc;
+}
+
+
+
+#endif /* MAIN_SYSTEM_HPP_ */
