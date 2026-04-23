@@ -31,6 +31,19 @@ void run_main() {
 	UARTTask::Inst().InitTask();
 	CubeTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
+
+	// Flight Task that will implement and start the state machine
+	// HB
+	// CAN Communication Task - messages with all other boards
+	// FSB Communication Task (Prev called TelemetryTask)
+	// PT
+	// TC
+	// Heater & Vent & LEDs in GPIO hpp
+	// Flash -- State Recovery
+	// HDITask
+	// Hardware WTDG?
+	// Future Work - USB C
+
 	//FlashTask::Inst().InitTask();
 
     // Print System Boot Info : Warning, don't queue more than 10 prints before scheduler starts
