@@ -19,13 +19,13 @@
  * INCLUDES
  ************************************/
 #include "LoggingTask.hpp"
+#include "DebugTask.hpp"
 #include "SystemDefines.hpp"
 #include "Command.hpp"
 #include "LoggingService.hpp"
 
 #include "DataBroker.hpp"
 #include "Task.hpp"
-#include "DebugTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
