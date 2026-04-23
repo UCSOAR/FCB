@@ -18,7 +18,7 @@
 
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
-    UARTDriver usart8(UART8);
+    UARTDriver usart1(USART1);
     UARTDriver uart7(UART7);
 }
 
