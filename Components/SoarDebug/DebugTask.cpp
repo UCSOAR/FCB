@@ -7,6 +7,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "DebugTask.hpp"
+#include "FlightTask.hpp"
 #include "Command.hpp"
 #include "CubeUtils.hpp"
 #include <cstring>
@@ -91,37 +92,45 @@ void DebugTask::Run(void *pvParams)
  */
 void DebugTask::HandleDebugMessage(const char *msg)
 {
-  //-- SYSTEM / CHAR COMMANDS -- (Must be last)
-  if (strcmp(msg, "sysreset") == 0)
-  {
-    // Reset the system
-    SOAR_ASSERT(false, "System reset requested");
-  }
-  else if (strcmp(msg, "sysinfo") == 0)
-  {
-    // Print message
-    SOAR_PRINT("\n\n-- CUBE SYSTEM --\n");
-    SOAR_PRINT("Current System Free Heap: %d Bytes\n", xPortGetFreeHeapSize());
-    SOAR_PRINT("Lowest Ever Free Heap: %d Bytes\n",
-               xPortGetMinimumEverFreeHeapSize());
-    SOAR_PRINT("Debug Task Runtime  \t: %d ms\n\n",
-               TICKS_TO_MS(xTaskGetTickCount()));
-  }
+	//-- PARAMETRIZED COMMANDS -- (Must be first)
+	if (strncmp(msg, "rsc ", 4) == 0) {
+		// Get parameter and send as a control action to flight task
+		int32_t state = ExtractIntParameter(msg, 4);
+		if (state != ERRVAL && state > 0 && state < UINT16_MAX)
+			FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, state));
+	}
 
-  else
-  {
-    // Single character command, or unknown command
-    switch (msg[0])
-    {
-    default:
-      SOAR_PRINT("Debug, unknown command: %s\n", msg);
-      break;
-    }
-  }
+	//-- SYSTEM / CHAR COMMANDS -- (Must be last)
+	else if (strcmp(msg, "sysreset") == 0)
+	{
+	// Reset the system
+	SOAR_ASSERT(false, "System reset requested");
+	}
+	else if (strcmp(msg, "sysinfo") == 0)
+	{
+	// Print message
+	SOAR_PRINT("\n\n-- CUBE SYSTEM --\n");
+	SOAR_PRINT("Current System Free Heap: %d Bytes\n", xPortGetFreeHeapSize());
+	SOAR_PRINT("Lowest Ever Free Heap: %d Bytes\n",
+			   xPortGetMinimumEverFreeHeapSize());
+	SOAR_PRINT("Debug Task Runtime  \t: %d ms\n\n",
+			   TICKS_TO_MS(xTaskGetTickCount()));
+	}
 
-  // We've read the data, clear the buffer
-  debugMsgIdx = 0;
-  isDebugMsgReady = false;
+	else
+	{
+	// Single character command, or unknown command
+	switch (msg[0])
+	{
+	default:
+	  SOAR_PRINT("Debug, unknown command: %s\n", msg);
+	  break;
+	}
+	}
+
+	// We've read the data, clear the buffer
+	debugMsgIdx = 0;
+	isDebugMsgReady = false;
 }
 
 /**

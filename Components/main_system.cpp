@@ -15,6 +15,7 @@
 #include "LoggingTask.hpp"
 #include "FlashTask.hpp"
 #include "DebugTask.hpp"
+#include "FlightTask.hpp"
 
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
@@ -30,7 +31,9 @@ void run_main() {
     // Init Tasks
 	UARTTask::Inst().InitTask();
 	CubeTask::Inst().InitTask();
+	FlightTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
+
 
 	// Flight Task that will implement and start the state machine
 	// HB

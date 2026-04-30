@@ -23,7 +23,6 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
-extern DMA_HandleTypeDef hdma_uart7_tx;
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
@@ -382,11 +381,11 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 
     __HAL_RCC_GPIOE_CLK_ENABLE();
     /**SPI4 GPIO Configuration
-    PE5     ------> SPI4_MISO
-    PE6     ------> SPI4_MOSI
     PE12     ------> SPI4_SCK
+    PE13     ------> SPI4_MISO
+    PE14     ------> SPI4_MOSI
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_12;
+    GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -476,119 +475,15 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     __HAL_RCC_SPI4_CLK_DISABLE();
 
     /**SPI4 GPIO Configuration
-    PE5     ------> SPI4_MISO
-    PE6     ------> SPI4_MOSI
     PE12     ------> SPI4_SCK
+    PE13     ------> SPI4_MISO
+    PE14     ------> SPI4_MOSI
     */
-    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_12);
+    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14);
 
     /* USER CODE BEGIN SPI4_MspDeInit 1 */
 
     /* USER CODE END SPI4_MspDeInit 1 */
-  }
-
-}
-
-/**
-  * @brief UART MSP Initialization
-  * This function configures the hardware resources used in this example
-  * @param huart: UART handle pointer
-  * @retval None
-  */
-void HAL_UART_MspInit(UART_HandleTypeDef* huart)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-  if(huart->Instance==UART7)
-  {
-    /* USER CODE BEGIN UART7_MspInit 0 */
-
-    /* USER CODE END UART7_MspInit 0 */
-
-  /** Initializes the peripherals clock
-  */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_UART7;
-    PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    /* Peripheral clock enable */
-    __HAL_RCC_UART7_CLK_ENABLE();
-
-    __HAL_RCC_GPIOE_CLK_ENABLE();
-    /**UART7 GPIO Configuration
-    PE7     ------> UART7_RX
-    PE8     ------> UART7_TX
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF7_UART7;
-    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-    /* UART7 DMA Init */
-    /* UART7_TX Init */
-    hdma_uart7_tx.Instance = DMA1_Stream0;
-    hdma_uart7_tx.Init.Request = DMA_REQUEST_UART7_TX;
-    hdma_uart7_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
-    hdma_uart7_tx.Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma_uart7_tx.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_uart7_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-    hdma_uart7_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_uart7_tx.Init.Mode = DMA_NORMAL;
-    hdma_uart7_tx.Init.Priority = DMA_PRIORITY_HIGH;
-    hdma_uart7_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-    if (HAL_DMA_Init(&hdma_uart7_tx) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    __HAL_LINKDMA(huart,hdmatx,hdma_uart7_tx);
-
-    /* UART7 interrupt Init */
-    HAL_NVIC_SetPriority(UART7_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(UART7_IRQn);
-    /* USER CODE BEGIN UART7_MspInit 1 */
-
-    /* USER CODE END UART7_MspInit 1 */
-
-  }
-
-}
-
-/**
-  * @brief UART MSP De-Initialization
-  * This function freeze the hardware resources used in this example
-  * @param huart: UART handle pointer
-  * @retval None
-  */
-void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
-{
-  if(huart->Instance==UART7)
-  {
-    /* USER CODE BEGIN UART7_MspDeInit 0 */
-
-    /* USER CODE END UART7_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_UART7_CLK_DISABLE();
-
-    /**UART7 GPIO Configuration
-    PE7     ------> UART7_RX
-    PE8     ------> UART7_TX
-    */
-    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_7|GPIO_PIN_8);
-
-    /* UART7 DMA DeInit */
-    HAL_DMA_DeInit(huart->hdmatx);
-
-    /* UART7 interrupt DeInit */
-    HAL_NVIC_DisableIRQ(UART7_IRQn);
-    /* USER CODE BEGIN UART7_MspDeInit 1 */
-
-    /* USER CODE END UART7_MspDeInit 1 */
   }
 
 }
