@@ -69,6 +69,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define VENT_Pin GPIO_PIN_4
+#define VENT_GPIO_Port GPIOE
+#define HEATER_Pin GPIO_PIN_5
+#define HEATER_GPIO_Port GPIOE
 #define BARO07_CS_Pin GPIO_PIN_13
 #define BARO07_CS_GPIO_Port GPIOC
 #define BARO11_CS_Pin GPIO_PIN_0
@@ -83,6 +87,8 @@ void Error_Handler(void);
 #define IMU32_CS_GPIO_Port GPIOC
 #define SPI_FLASH_CS_Pin GPIO_PIN_2
 #define SPI_FLASH_CS_GPIO_Port GPIOB
+#define BUZZER_Pin GPIO_PIN_7
+#define BUZZER_GPIO_Port GPIOE
 #define IMU16_INT_Pin GPIO_PIN_15
 #define IMU16_INT_GPIO_Port GPIOA
 #define IMU16_CS_Pin GPIO_PIN_0
