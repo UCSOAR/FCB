@@ -554,6 +554,9 @@ RocketState Coast::HandleCommand(Command& cm)
         case RSC_COAST_TO_BRAKING:
             nextStateID = RS_BRAKING;
             break;
+        case RSC_COAST_TO_DESCENT:
+            nextStateID = RS_DESCENT;
+            break;
         case RSC_GOTO_PRELAUNCH:
             nextStateID = RS_PRELAUNCH;
             break;

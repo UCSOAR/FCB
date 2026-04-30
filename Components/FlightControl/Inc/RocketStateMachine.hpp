@@ -112,6 +112,7 @@ enum RocketControlCommands
 
     //-- COAST --
     RSC_COAST_TO_BRAKING, // Internal command, should not be triggered externally
+    RSC_COAST_TO_DESCENT, // Skip braking if rocket is undershooting its target apogee
 
     //-- DESCENT --
     RSC_BRAKING_TO_DESCENT, // Internal command, should not be triggered externally
