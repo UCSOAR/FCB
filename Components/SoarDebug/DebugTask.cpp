@@ -14,6 +14,7 @@
 #include "LoggingService.hpp"
 #include "stm32h7xx_hal.h"
 #include "FlashTask.hpp"
+#include "CANTask.hpp"
 
 // External Tasks (to send debug commands to)
 
@@ -115,6 +116,25 @@ void DebugTask::HandleDebugMessage(const char *msg)
 			   xPortGetMinimumEverFreeHeapSize());
 	SOAR_PRINT("Debug Task Runtime  \t: %d ms\n\n",
 			   TICKS_TO_MS(xTaskGetTickCount()));
+	}
+	else if (strcmp(msg, "SendCANToFCBtrue") == 0)
+	{
+		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{true};
+		CANTask::Inst().SendCANMessageToDaughter(
+			CAN_ROCKET_TARGET_DAQ,
+			DAQ_LogIndexes::DAQ_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
+			(uint8_t*) &airBrakesInstruction
+		);
+	}
+
+	else if (strcmp(msg, "SendCANToFCBfalse") == 0)
+	{
+		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{false};
+		CANTask::Inst().SendCANMessageToDaughter(
+			CAN_ROCKET_TARGET_DAQ,
+			DAQ_LogIndexes::DAQ_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
+			(uint8_t*) &airBrakesInstruction
+		);
 	}
 
 	else

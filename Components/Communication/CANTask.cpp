@@ -12,8 +12,6 @@
  ************************************/
 #include "CANTask.hpp"
 #include "SystemDefines.hpp"
-#include "RPBLogs.hpp"
-#include "DAQLogs.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -75,16 +73,19 @@ void CANTask::Run(void * pvParams)
 
 		bool isDataAvailable = false;
 
-//		RPB_AIR_BRAKES_COMMAND openAirBrakes = {true};
 		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{false};
 		isDataAvailable = fcbCAN.ReadMessageFromDaughterByLogIndex(
 				fcbCAN.GetIDOfBoardWithName(CAN_ROCKET_TARGET_DAQ),
-				1,
+				DAQ_LogIndexes::DAQ_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
 				(uint8_t*)&airBrakesInstruction,
 				sizeof(DAQ_AIR_BRAKES_COMMAND)
 		);
 		if (isDataAvailable) {
-//			HandleCommand();
+			if (airBrakesInstruction.airBrakesGo) {
+				SOAR_PRINT("AIR Brakes Instruction received true");
+			} else {
+				SOAR_PRINT("AIR Brakes Instruction received false");
+			}
 		}
 
         // Check for commands from other tasks

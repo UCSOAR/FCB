@@ -16,6 +16,8 @@
 #include "Task.hpp"
 #include "SystemDefines.hpp"
 #include "CanAutoNodeMotherboard.hpp"
+#include "RPBLogs.hpp"
+#include "DAQLogs.hpp"
 
 /************************************
  * MACROS AND DEFINES
@@ -38,6 +40,9 @@ public:
     }
 
     void InitTask();
+    bool SendCANMessageToDaughter(char* aBoardName, uint8_t aLogIndex, const uint8_t* aMsg) {
+    	return fcbCAN.SendMessageToDaughterByLogIndex(fcbCAN.GetIDOfBoardWithName(aBoardName), aLogIndex, aMsg);
+    };
 
 protected:
     static void RunTask(void* pvParams) { CANTask::Inst().Run(pvParams); } // Static Task Interface, passes control to the instance Run();
@@ -51,8 +56,6 @@ private:
     CANTask& operator=(const CANTask&);            // Prevent assignment
 
     CanAutoNodeMotherboard fcbCAN{&hfdcan1};
-    // struct of daughterboards
-
 };
 
 
