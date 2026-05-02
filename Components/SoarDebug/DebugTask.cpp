@@ -119,20 +119,20 @@ void DebugTask::HandleDebugMessage(const char *msg)
 	}
 	else if (strcmp(msg, "SendCANToFCBtrue") == 0)
 	{
-		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{true};
+		RPB_AIR_BRAKES_COMMAND airBrakesInstruction{true};
 		CANTask::Inst().SendCANMessageToDaughter(
-			CAN_ROCKET_TARGET_DAQ,
-			DAQ_LogIndexes::DAQ_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
+			CAN_ROCKET_TARGET_RPB,
+			RPB_LogIndexes::_RPB_AIR_BRAKES_COMMAND_LOGINDEX,
 			(uint8_t*) &airBrakesInstruction
 		);
 	}
 
 	else if (strcmp(msg, "SendCANToFCBfalse") == 0)
 	{
-		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{false};
+		RPB_AIR_BRAKES_COMMAND airBrakesInstruction{false};
 		CANTask::Inst().SendCANMessageToDaughter(
-			CAN_ROCKET_TARGET_DAQ,
-			DAQ_LogIndexes::DAQ_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
+			CAN_ROCKET_TARGET_RPB,
+			RPB_LogIndexes::_RPB_AIR_BRAKES_COMMAND_LOGINDEX,
 			(uint8_t*) &airBrakesInstruction
 		);
 	}

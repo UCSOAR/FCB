@@ -73,15 +73,15 @@ void CANTask::Run(void * pvParams)
 
 		bool isDataAvailable = false;
 
-		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{false};
+		RPB_AIR_BRAKES_COMMAND airBrakesInstruction{false};
 		isDataAvailable = fcbCAN.ReadMessageFromDaughterByLogIndex(
-				fcbCAN.GetIDOfBoardWithName(CAN_ROCKET_TARGET_DAQ),
-				DAQ_LogIndexes::DAQ_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
-				(uint8_t*)&airBrakesInstruction,
-				sizeof(DAQ_AIR_BRAKES_COMMAND)
+			fcbCAN.GetIDOfBoardWithName(CAN_ROCKET_TARGET_RPB),
+			RPB_LogIndexes::_RPB_AIR_BRAKES_COMMAND_LOGINDEX,
+			(uint8_t*)&airBrakesInstruction,
+			sizeof(DAQ_AIR_BRAKES_COMMAND)
 		);
 		if (isDataAvailable) {
-			if (airBrakesInstruction.airBrakesGo) {
+			if (airBrakesInstruction.openAirBrakes) {
 				SOAR_PRINT("AIR Brakes Instruction received true");
 			} else {
 				SOAR_PRINT("AIR Brakes Instruction received false");
