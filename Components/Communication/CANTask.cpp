@@ -12,6 +12,8 @@
  ************************************/
 #include "CANTask.hpp"
 #include "SystemDefines.hpp"
+#include "stm32h7xx_hal.h"
+#include "main.h"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -61,6 +63,7 @@ void CANTask::InitTask()
  */
 void CANTask::Run(void * pvParams)
 {
+	HAL_GPIO_WritePin(CAN_STANDBY_GPIO_Port, CAN_STANDBY_Pin, GPIO_PIN_RESET);
 	while (1) {
 		// TODO Check if all board are connected and skip this check if so
 		// Check for join requests
@@ -71,22 +74,7 @@ void CANTask::Run(void * pvParams)
 			fcbCAN.Heartbeat();
 		}
 
-		bool isDataAvailable = false;
-
-		RPB_AIR_BRAKES_COMMAND airBrakesInstruction{false};
-		isDataAvailable = fcbCAN.ReadMessageFromDaughterByLogIndex(
-			fcbCAN.GetIDOfBoardWithName(CAN_ROCKET_TARGET_RPB),
-			RPB_LogIndexes::_RPB_AIR_BRAKES_COMMAND_LOGINDEX,
-			(uint8_t*)&airBrakesInstruction,
-			sizeof(DAQ_AIR_BRAKES_COMMAND)
-		);
-		if (isDataAvailable) {
-			if (airBrakesInstruction.openAirBrakes) {
-				SOAR_PRINT("AIR Brakes Instruction received true");
-			} else {
-				SOAR_PRINT("AIR Brakes Instruction received false");
-			}
-		}
+		HandleIncomingCANMessages();
 
         // Check for commands from other tasks
 		Command cm{};

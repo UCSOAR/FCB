@@ -28,14 +28,6 @@ extern FDCAN_HandleTypeDef hfdcan1;
 /************************************
  * TYPEDEFS
  ************************************/
-template <typename T>
-struct CANMessage {
-    T first;
-    char* boardName;
-    DAQ_LogIndexes messageLogIndex;
-};
-
-//static std::array<int, 5> numbers = {1, 2, 3, 4, 5};
 
 /************************************
  * CLASS DEFINITIONS
@@ -49,11 +41,20 @@ public:
     }
 
     void InitTask();
+
+    /**
+     * Any Task can use this API to send messages through the CAN Network
+     * The Board target names and log index can be found in the CanAutoNode files in the communications repository
+     */
     bool SendCANMessageToDaughter(char* aBoardName, uint8_t aLogIndex, const uint8_t* aMsg) {
     	return fcbCAN.SendMessageToDaughterByLogIndex(fcbCAN.GetIDOfBoardWithName(aBoardName), aLogIndex, aMsg);
     };
 
-
+    /**
+     * Check messages in Rx CAN buffers and handle them appropriately
+     * Handling for specific messages is implemented locally in CANMessageHandler.cpp
+     */
+    void HandleIncomingCANMessages();
 
 
 protected:
@@ -69,21 +70,12 @@ private:
 
     CanAutoNodeMotherboard fcbCAN{&hfdcan1};
 
-    void PollForCANMessages();
+    // Handle RPB Messages
+    void HandleRPBAirBrakesCommand();
 
-    template <typename T>
-	T ReceiveCANMessage(T x, T y) {
-    	bool isDataAvailable = false;
-		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{false};
-		isDataAvailable = fcbCAN.ReadMessageFromDaughterByLogIndex(
-			fcbCAN.GetIDOfBoardWithName(CAN_ROCKET_TARGET_DAQ),
-			DAQ_LogIndexes::_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
-			(uint8_t*)&airBrakesInstruction,
-			sizeof(DAQ_AIR_BRAKES_COMMAND)
-		);
-	}
+    // Handle DAQ Messages
 
-
+    // Handle BMB Messages
 };
 
 

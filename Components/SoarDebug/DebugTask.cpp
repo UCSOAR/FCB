@@ -127,7 +127,7 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		);
 	}
 
-	else if (strcmp(msg, "SendCANToFCBfalse") == 0)
+	else if (strcmp(msg, "SendCANToFCBfal") == 0)
 	{
 		RPB_AIR_BRAKES_COMMAND airBrakesInstruction{false};
 		CANTask::Inst().SendCANMessageToDaughter(
