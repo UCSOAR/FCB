@@ -52,7 +52,7 @@ enum GLOBAL_COMMANDS : uint8_t
 /* - Lower priority number means lower priority task ---------------------------------*/
 
 // FLIGHT PHASE
-constexpr uint8_t FLIGHT_TASK_RTOS_PRIORITY = 4;            // Priority of the flight task
+constexpr uint8_t FLIGHT_TASK_RTOS_PRIORITY = 2;            // Priority of the flight task
 constexpr uint8_t FLIGHT_TASK_QUEUE_DEPTH_OBJS = 10;        // Size of the flight task queue
 constexpr uint16_t FLIGHT_TASK_STACK_DEPTH_WORDS = 512;        // Size of the flight task stack
 
@@ -66,6 +66,12 @@ constexpr uint8_t TASK_DEBUG_PRIORITY = 2;            // Priority of the debug t
 constexpr uint8_t TASK_DEBUG_QUEUE_DEPTH_OBJS = 10;        // Size of the debug task queue
 constexpr uint16_t TASK_DEBUG_STACK_DEPTH_WORDS = 512;        // Size of the debug task stack
 
+// CAN BUS TASK
+constexpr uint8_t TASK_CANBUS_PRIORITY = 2;
+constexpr uint8_t TASK_CANBUS_QUEUE_DEPTH_OBJS = 10;
+constexpr uint16_t TASK_CANBUS_STACK_DEPTH_WORDS = 512;
+
+// LOGGING TASK
 constexpr uint8_t TASK_LOGGING_PRIORITY = 3;
 constexpr uint8_t TASK_LOGGING_QUEUE_DEPTH_OBJS = 10;
 constexpr uint16_t TASK_LOGGING_QUEUE_DEPTH_WORDS = 512;

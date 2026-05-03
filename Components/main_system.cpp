@@ -16,6 +16,7 @@
 #include "FlashTask.hpp"
 #include "DebugTask.hpp"
 #include "FlightTask.hpp"
+#include "CANTask.hpp"
 
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
@@ -33,7 +34,7 @@ void run_main() {
 	CubeTask::Inst().InitTask();
 	FlightTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
-
+	CANTask::Inst().InitTask();
 
 	// Flight Task that will implement and start the state machine
 	// HB

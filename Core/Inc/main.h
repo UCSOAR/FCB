@@ -89,10 +89,10 @@ void Error_Handler(void);
 #define SPI_FLASH_CS_GPIO_Port GPIOB
 #define BUZZER_Pin GPIO_PIN_7
 #define BUZZER_GPIO_Port GPIOE
+#define CAN_STANDBY_Pin GPIO_PIN_10
+#define CAN_STANDBY_GPIO_Port GPIOA
 #define IMU16_INT_Pin GPIO_PIN_15
 #define IMU16_INT_GPIO_Port GPIOA
-#define IMU16_CS_Pin GPIO_PIN_0
-#define IMU16_CS_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
 
