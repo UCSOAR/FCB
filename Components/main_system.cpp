@@ -21,7 +21,7 @@
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
     UARTDriver usart1(USART1);
-    UARTDriver uart7(UART7);
+    UARTDriver usart2(USART2);
 }
 
 /* Interface Functions ------------------------------------------------------------*/

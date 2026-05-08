@@ -17,7 +17,7 @@
 #include "RocketStateMachine.hpp"
 
 // TODO NEW
-//#include "DMBProtocolTask.hpp"
+//#include "RadioProtocolTask.hpp"
 //#include "SPIFlash.hpp"
 //#include "SystemStorage.hpp"
 
@@ -156,8 +156,8 @@ void FlightTask::SendRocketState()
     // For testing, generate a PROTOBUF message and send it to the Protocol Task
 	// TODO NEW
 //    Proto::ControlMessage msg;
-//    msg.set_source(Proto::Node::NODE_DMB);
-//    msg.set_target(Proto::Node::NODE_RCU);
+//    msg.set_source(Proto::Node::NODE_FCB);
+//    msg.set_target(Proto::Node::NODE_FSB);
 //    Proto::SystemState stateMsg;
 //    if(firstStateSent_ < FLIGHT_TASK_BOOTUP_TELE_CYCLES) {
 //        if(firstStateSent_ < 1) {
@@ -178,5 +178,5 @@ void FlightTask::SendRocketState()
 //    msg.serialize(writeBuffer);
 //
 //    // Send the control message
-//    DMBProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_CONTROL);
+//    RadioProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_CONTROL);
 }

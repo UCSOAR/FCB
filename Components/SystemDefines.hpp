@@ -12,7 +12,7 @@
 #define CUBE_MAIN_SYSTEM_DEFINES_H
 
 /* Environment Defines ------------------------------------------------------------------*/
-//#define COMPUTER_ENVIRONMENT        // Define this if we're in Windows, Linux or Mac (not when flashing on DMB)
+//#define COMPUTER_ENVIRONMENT        // Define this if we're in Windows, Linux or Mac (not when flashing on FCB)
 
 #ifdef COMPUTER_ENVIRONMENT
 #define __CC_ARM
@@ -37,7 +37,7 @@ enum GLOBAL_COMMANDS : uint8_t
   COMMAND_NONE = 0,        // No command, packet can probably be ignored
   TASK_SPECIFIC_COMMAND,    // Runs a task specific command when given this object
   DATA_COMMAND,// Data command, used to send data to a task. Target is stored in taskCommand
-  CONTROL_ACTION,            // Control actions, used in Rocket State Machine, direct translation to RCU<->DMB Protocol
+  CONTROL_ACTION,            // Control actions, used in Rocket State Machine, direct translation to RCU<->FCB Protocol
   REQUEST_COMMAND,            // Request command
   HEARTBEAT_COMMAND,            // Control actions for heartbeat commands
   PROTOCOL_COMMAND,           // Protocol command, used for commands to the Protocol Task
@@ -70,6 +70,9 @@ constexpr uint16_t TASK_DEBUG_STACK_DEPTH_WORDS = 512;        // Size of the deb
 constexpr uint8_t TASK_CANBUS_PRIORITY = 2;
 constexpr uint8_t TASK_CANBUS_QUEUE_DEPTH_OBJS = 10;
 constexpr uint16_t TASK_CANBUS_STACK_DEPTH_WORDS = 512;
+
+// RADIO PROTOCOL TASK
+constexpr uint8_t TASK_RADIO_PROTOCOL_PRIORITY = 4;
 
 // LOGGING TASK
 constexpr uint8_t TASK_LOGGING_PRIORITY = 3;
