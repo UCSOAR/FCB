@@ -74,6 +74,7 @@ private:
     void HandleRPBAirBrakesCommand();
 
     // Handle DAQ Messages
+    void HandleDAQAirBrakesCommand();
 
     // Handle BMB Messages
 };

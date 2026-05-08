@@ -117,7 +117,7 @@ void DebugTask::HandleDebugMessage(const char *msg)
 	SOAR_PRINT("Debug Task Runtime  \t: %d ms\n\n",
 			   TICKS_TO_MS(xTaskGetTickCount()));
 	}
-	else if (strcmp(msg, "SendCANToFCBtrue") == 0)
+	else if (strcmp(msg, "AirTFCBToRPB") == 0)
 	{
 		RPB_AIR_BRAKES_COMMAND airBrakesInstruction{true};
 		CANTask::Inst().SendCANMessageToDaughter(
@@ -127,7 +127,7 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		);
 	}
 
-	else if (strcmp(msg, "SendCANToFCBfal") == 0)
+	else if (strcmp(msg, "AirFFCBToRPB") == 0)
 	{
 		RPB_AIR_BRAKES_COMMAND airBrakesInstruction{false};
 		CANTask::Inst().SendCANMessageToDaughter(
@@ -135,6 +135,35 @@ void DebugTask::HandleDebugMessage(const char *msg)
 			RPB_LogIndexes::_RPB_AIR_BRAKES_COMMAND_LOGINDEX,
 			(uint8_t*) &airBrakesInstruction
 		);
+	}
+
+	else if (strcmp(msg, "AirTFCBToDAQ") == 0)
+	{
+		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{true};
+
+		CANTask::Inst().SendCANMessageToDaughter(
+			CAN_ROCKET_TARGET_DAQ,
+			DAQ_LogIndexes::_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
+			(uint8_t*) &airBrakesInstruction
+		);
+	}
+
+	else if (strcmp(msg, "AirFFCBToDAQ") == 0)
+	{
+		DAQ_AIR_BRAKES_COMMAND airBrakesInstruction{false};
+		
+		CANTask::Inst().SendCANMessageToDaughter(
+			CAN_ROCKET_TARGET_DAQ,
+			DAQ_LogIndexes::_DAQ_AIR_BRAKES_COMMAND_LOGINDEX,
+			(uint8_t*) &airBrakesInstruction
+		);
+	} else if (strcmp(msg,"hi") == 0) {
+		for(uint16_t i = 0; i < 10; i++) {
+			uint8_t data[] = {1,2,3,4,5,6,7,8,98,10};
+			SOAR_PRINT("sending %d\n",i);
+			CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, i, data);
+			osDelay(1000);
+		}
 	}
 
 	else
