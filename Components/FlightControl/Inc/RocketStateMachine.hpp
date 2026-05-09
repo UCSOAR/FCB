@@ -14,8 +14,7 @@
  * INCLUDES
  ************************************/
 #include "Command.hpp"
-// TODO NEW: Include proto header and code when integrated
-//#include "CoreProto.h"
+#include "CoreProto.h"
 
 /************************************
  * MACROS AND DEFINES
@@ -166,8 +165,7 @@ public:
 
     void HandleCommand(Command& cm);
 
-    // TODO NEW
-//    Proto::RocketState GetRocketStateAsProto();
+   Proto::RocketState GetRocketStateAsProto();
 
 protected:
     RocketState TransitionState(RocketState nextState);

@@ -172,33 +172,34 @@ const char* BaseRocketState::StateToString(RocketState stateId)
  * @brief Gets the current rocket state as a proto enum
  * @return Current rocket state
  */
-// TODO NEW
-//Proto::RocketState RocketSM::GetRocketStateAsProto()
-//{
-//    switch (rs_currentState->GetStateID()) {
-//    case RS_PRELAUNCH:
-//        return Proto::RocketState::RS_PRELAUNCH;
-//    case RS_FILL:
-//        return Proto::RocketState::RS_FILL;
-//    case RS_ARM:
-//        return Proto::RocketState::RS_ARM;
-//    case RS_IGNITION:
-//        return Proto::RocketState::RS_IGNITION;
-//    case RS_LAUNCH:
-//        return Proto::RocketState::RS_LAUNCH;
-//    case RS_BURN:
-//        return Proto::RocketState::RS_BURN;
-//    case RS_COAST:
-//        return Proto::RocketState::RS_COAST;
-//    case RS_DESCENT:
-//        return Proto::RocketState::RS_DESCENT;
-//    case RS_RECOVERY:
-//        return Proto::RocketState::RS_RECOVERY;
-//    case RS_ABORT:
-//        return Proto::RocketState::RS_ABORT;
-//    case RS_TEST:
-//        return Proto::RocketState::RS_TEST;
-//    default:
-//        return Proto::RocketState::RS_NONE;
-//    }
-//}
+Proto::RocketState RocketSM::GetRocketStateAsProto()
+{
+   switch (rs_currentState->GetStateID()) {
+   case RS_PRELAUNCH:
+       return Proto::RocketState::RS_PRELAUNCH;
+   case RS_FILL:
+       return Proto::RocketState::RS_FILL;
+   case RS_ARM:
+       return Proto::RocketState::RS_ARM;
+   case RS_IGNITION:
+       return Proto::RocketState::RS_IGNITION;
+   case RS_LAUNCH:
+       return Proto::RocketState::RS_LAUNCH;
+   case RS_BURN:
+       return Proto::RocketState::RS_BURN;
+   case RS_COAST:
+       return Proto::RocketState::RS_COAST;
+   case RS_BRAKING:
+	   return Proto::RocketState::RS_BRAKING;
+   case RS_DESCENT:
+       return Proto::RocketState::RS_DESCENT;
+   case RS_TOUCHDOWN:
+       return Proto::RocketState::RS_TOUCHDOWN;
+   case RS_ABORT:
+       return Proto::RocketState::RS_ABORT;
+   case RS_TEST:
+       return Proto::RocketState::RS_TEST;
+   default:
+       return Proto::RocketState::RS_NONE;
+   }
+}

@@ -15,6 +15,7 @@
 #include "SystemDefines.hpp"
 #include "TimerTransitions.hpp"
 #include "RocketStateMachine.hpp"
+#include "RadioProtoTask.hpp"
 
 // TODO NEW
 //#include "RadioProtocolTask.hpp"
@@ -154,29 +155,28 @@ void FlightTask::HandleCommand(Command& cm)
 void FlightTask::SendRocketState()
 {
     // For testing, generate a PROTOBUF message and send it to the Protocol Task
-	// TODO NEW
-//    Proto::ControlMessage msg;
-//    msg.set_source(Proto::Node::NODE_FCB);
-//    msg.set_target(Proto::Node::NODE_FSB);
-//    Proto::SystemState stateMsg;
-//    if(firstStateSent_ < FLIGHT_TASK_BOOTUP_TELE_CYCLES) {
-//        if(firstStateSent_ < 1) {
-//            stateMsg.set_sys_state(Proto::SystemState::State::SYS_UNCAUGHT_RESET);
-//        }
-//        else {
-//            stateMsg.set_sys_state(Proto::SystemState::State::SYS_BOOTUP_COMPLETE);
-//        }
-//        firstStateSent_ += 1;
-//    }
-//    else {
-//        stateMsg.set_sys_state(Proto::SystemState::State::SYS_NORMAL_OPERATION);
-//    }
-//    stateMsg.set_rocket_state(rsm_->GetRocketStateAsProto());
-//    msg.set_sys_state(stateMsg);
-//
-//    EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
-//    msg.serialize(writeBuffer);
-//
-//    // Send the control message
-//    RadioProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_CONTROL);
+   Proto::ControlMessage msg;
+   msg.set_source(Proto::Node::NODE_FCB);
+   msg.set_target(Proto::Node::NODE_FSB);
+   Proto::SystemState stateMsg;
+   if(firstStateSent_ < FLIGHT_TASK_BOOTUP_TELE_CYCLES) {
+       if(firstStateSent_ < 1) {
+           stateMsg.set_sys_state(Proto::SystemState::State::SYS_UNCAUGHT_RESET);
+       }
+       else {
+           stateMsg.set_sys_state(Proto::SystemState::State::SYS_BOOTUP_COMPLETE);
+       }
+       firstStateSent_ += 1;
+   }
+   else {
+       stateMsg.set_sys_state(Proto::SystemState::State::SYS_NORMAL_OPERATION);
+   }
+   stateMsg.set_rocket_state(rsm_->GetRocketStateAsProto());
+   msg.set_sys_state(stateMsg);
+
+   EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
+   msg.serialize(writeBuffer);
+
+   // Send the control message
+   RadioProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_CONTROL);
 }

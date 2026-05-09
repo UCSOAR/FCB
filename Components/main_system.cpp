@@ -17,6 +17,8 @@
 #include "DebugTask.hpp"
 #include "FlightTask.hpp"
 #include "CANTask.hpp"
+#include "WatchdogTask.hpp"
+#include "RadioProtoTask.hpp"
 
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
@@ -30,11 +32,13 @@ namespace Driver {
 */
 void run_main() {
     // Init Tasks
+	WatchdogTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
 	CubeTask::Inst().InitTask();
 	FlightTask::Inst().InitTask();
 	DebugTask::Inst().InitTask();
 	CANTask::Inst().InitTask();
+	RadioProtocolTask::Inst().InitTask();
 
 	// Flight Task that will implement and start the state machine
 	// HB

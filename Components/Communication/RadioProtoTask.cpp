@@ -13,10 +13,10 @@
 #include "RadioProtoTask.hpp"
 #include "FlightTask.hpp"
 #include "ReadBufferFixedSize.h"
+#include "WatchdogTask.hpp"
 
 // TODO NEW
 //#include "FlashTask.hpp"
-//#include "WatchdogTask.hpp"
 //#include "TelemetryTask.hpp"
 
 /************************************
@@ -139,8 +139,7 @@ void RadioProtocolTask::HandleProtobufControlMesssage(EmbeddedProto::ReadBufferF
     if(msg.has_hb()) {
         // This is a heartbeat message, update the heartbeat
         // SOAR_PRINT("PROTO-INFO: Received Heartbeat Message\n");
-    	// TODO NEW
-//        WatchdogTask::Inst().SendCommand(Command(HEARTBEAT_COMMAND, (uint16_t)RADIOHB_REQUEST));
+        WatchdogTask::Inst().SendCommand(Command(HEARTBEAT_COMMAND, (uint16_t)RADIOHB_REQUEST));
     }
     else if(msg.has_ping()) {
         // This is a ping message, respond with an ack
