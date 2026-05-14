@@ -34,6 +34,10 @@ typedef struct
     int32_t     pressure_1;
 } PressureTransducerData;
 
+//ADC Handles
+extern ADC_HandleTypeDef hadc1;      // ADC1 - PT1
+extern ADC_HandleTypeDef hadc2;      // ADC2 - PT2
+
 /************************************
  * CLASS DEFINITIONS
  ************************************/
@@ -67,6 +71,9 @@ private:
     PressureTransducerTask();                                        // Private constructor
     PressureTransducerTask(const PressureTransducerTask&);                    // Prevent copy-construction
     PressureTransducerTask& operator=(const PressureTransducerTask&);            // Prevent assignment
+
+    bool ReadADC(ADC_HandleTypeDef* hadc, uint32_t& adcRaw);
+    int32_t ConvertADCToPressure_mPSI(uint32_t adcRaw);
 };
 
 /************************************

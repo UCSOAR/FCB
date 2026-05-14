@@ -22,6 +22,7 @@
 #include "RadioProtoTask.hpp"
 #include "WatchdogTask.hpp"
 #include "GPIO.hpp"
+#include "PressureTransducerTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -141,6 +142,7 @@ void TelemetryTask::RequestSample()
  */
 void TelemetryTask::RequestTransmit()
 {
+	PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_TRANSMIT));
 }
 
 /**

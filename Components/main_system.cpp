@@ -20,7 +20,7 @@
 #include "WatchdogTask.hpp"
 #include "RadioProtoTask.hpp"
 #include "TelemetryTask.hpp"
-//#include "PressureTransducerTask.hpp"
+#include "PressureTransducerTask.hpp"
 
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
@@ -42,7 +42,7 @@ void run_main() {
 	CANTask::Inst().InitTask();
 	RadioProtocolTask::Inst().InitTask();
 	TelemetryTask::Inst().InitTask();
-//	PressureTransducerTask::Inst().InitTask();
+	PressureTransducerTask::Inst().InitTask();
 
 	// Flight Task that will implement and start the state machine
 	// HB

@@ -16,6 +16,7 @@
 #include "Task.hpp"
 #include <time.h>
 #include "RadioProtoTask.hpp"
+#include "CubeUtils.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -24,6 +25,12 @@
 /************************************
  * VARIABLES
  ************************************/
+static constexpr uint32_t PT_ADC_POLL_TIMEOUT_MS = 50;
+// TODO NEW JUST EXPERIMENT SHOULD BE 3.3V
+static constexpr double ADC_VREF = 3.3;
+static constexpr double ADC_MAX_16BIT = 65535.0;
+// Same scale factor from the old F405 code
+static constexpr double PRESSURE_SCALE = 1.5220883534136546;
 
 /************************************
  * FUNCTION DECLARATIONS
@@ -116,11 +123,12 @@ void PressureTransducerTask::HandleRequestCommand(uint16_t taskCommand)
         SamplePressureTransducer();
         break;
     case PT_REQUEST_TRANSMIT:
+    	SamplePressureTransducer();
     	TransmitProtocolPressureData();
         break;
     case PT_REQUEST_DEBUG:
         SOAR_PRINT("|PT_TASK| Pressure (PSI): %d.%d, MCU Timestamp: %u\r\n", data->pressure_1 / 1000, data->pressure_1 % 1000,
-        timestampPT);
+        		TICKS_TO_MS(xTaskGetTickCount()));
         break;
     default:
         SOAR_PRINT("UARTTask - Received Unsupported REQUEST_COMMAND {%d}\n", taskCommand);
@@ -128,18 +136,41 @@ void PressureTransducerTask::HandleRequestCommand(uint16_t taskCommand)
     }
 }
 
-void ADC_Select_CH9 (void)
+/**
+ * @brief Read one blocking ADC sample from an already-configured ADC.
+ */
+bool PressureTransducerTask::ReadADC(ADC_HandleTypeDef* hadc, uint32_t& adcRaw)
 {
-	ADC_ChannelConfTypeDef sConfig = {0};
-	  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-	  */
-	  sConfig.Channel = ADC_CHANNEL_9;
-	  sConfig.Rank = 1;
-	  sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
-	  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-	  {
-	    Error_Handler();
-	  }
+    if (HAL_ADC_Start(hadc) != HAL_OK)
+    {
+        HAL_ADC_Stop(hadc);
+        return false;
+    }
+
+    if (HAL_ADC_PollForConversion(hadc, PT_ADC_POLL_TIMEOUT_MS) != HAL_OK)
+    {
+        HAL_ADC_Stop(hadc);
+        return false;
+    }
+
+    adcRaw = HAL_ADC_GetValue(hadc);
+
+    HAL_ADC_Stop(hadc);
+    return true;
+}
+
+/**
+ * @brief Convert raw 16-bit ADC value to pressure in milli-PSI.
+ */
+int32_t PressureTransducerTask::ConvertADCToPressure_mPSI(uint32_t adcRaw)
+{
+    double adcVoltage = (ADC_VREF / ADC_MAX_16BIT) * static_cast<double>((adcRaw-1753));
+
+    double transducerVoltage = adcVoltage * PRESSURE_SCALE;
+
+    double pressure_mPSI = (250.0 * transducerVoltage - 125.0) * 1000.0;
+
+    return static_cast<int32_t>(pressure_mPSI);
 }
 
 /**
@@ -148,23 +179,18 @@ void ADC_Select_CH9 (void)
  */
 void PressureTransducerTask::SamplePressureTransducer()
 {
-	static const int PT_VOLTAGE_ADC_POLL_TIMEOUT = 50;
-	static const double PRESSURE_SCALE = 1.5220883534136546; // Value to scale to original voltage value
-	double adcVal[1] = {};
-	double pressureTransducerValue1 = 0;
-	double vi = 0;
+	uint32_t adc1Raw = 0;
+	if (ReadADC(&hadc1, adc1Raw))
+	{
+		data->pressure_1 = ConvertADCToPressure_mPSI(adc1Raw);
+	}
 
-	/* Functions -----------------------------------------------------------------*/
-	ADC_Select_CH9();
-	HAL_ADC_Start(&hadc1);  // Enables ADC and starts conversion of regular channels
-	if(HAL_ADC_PollForConversion(&hadc1, PT_VOLTAGE_ADC_POLL_TIMEOUT) == HAL_OK) { //Check if conversion is completed
-		adcVal[0] = HAL_ADC_GetValue(&hadc1); // Get ADC Value
-		HAL_ADC_Stop(&hadc1);
-		}
-	vi = ((3.3/4095) * (adcVal[0])); // Converts 12 bit ADC value into voltage
-	pressureTransducerValue1 = (250 * (vi * PRESSURE_SCALE) - 125) * 1000; // Multiply by 1000 to keep decimal places
-	data->pressure_1 = (int32_t) pressureTransducerValue1; // Pressure in PSI
-//	SOAR_PRINT("The pressure is : %d \n\n", (int32_t) pressureTransducerValue1);
+	// ENABLE IF WE EVER USE A SECOND PT IN UPPER
+//	uint32_t adc2Raw = 0;
+//	if (ReadADC(&hadc2, adc2Raw))
+//	{
+//		data->pressure_2 = ConvertADCToPressure_mPSI(adc2Raw);
+//	}
 }
 
 /**
@@ -175,15 +201,15 @@ void PressureTransducerTask::TransmitProtocolPressureData()
     //SOAR_PRINT("Pressure Transducer Transmit...\n");
 
     Proto::TelemetryMessage msg;
-	msg.set_source(Proto::Node::NODE_DMB);
-	msg.set_target(Proto::Node::NODE_RCU);
-	Proto::DmbPressure pressData;
+	msg.set_source(Proto::Node::NODE_FCB);
+	msg.set_target(Proto::Node::NODE_FSB);
+	Proto::FcbPressure pressData;
 	pressData.set_upper_pv_pressure(data->pressure_1);
-	msg.set_dmbPressure(pressData);
+	msg.set_fcbPressure(pressData);
 
 	EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
 	msg.serialize(writeBuffer);
 
     // Send the barometer data
-    DMBProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_TELEMETRY);
+    RadioProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_TELEMETRY);
 }
