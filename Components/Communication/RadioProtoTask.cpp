@@ -14,10 +14,10 @@
 #include "FlightTask.hpp"
 #include "ReadBufferFixedSize.h"
 #include "WatchdogTask.hpp"
+#include "TelemetryTask.hpp"
 
 // TODO NEW
 //#include "FlashTask.hpp"
-//#include "TelemetryTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -89,33 +89,43 @@ void RadioProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFi
     {
     case Proto::FcbCommand::Command::RSC_ANY_TO_ABORT:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_ANY_TO_ABORT));
+        SOAR_PRINT("RSC_ANY_TO_ABORT\n");
         break;
     case Proto::FcbCommand::Command::RSC_OPEN_VENT:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_OPEN_VENT));
+        SOAR_PRINT("RSC_OPEN_VENT\n");
         break;
     case Proto::FcbCommand::Command::RSC_CLOSE_VENT:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_CLOSE_VENT));
+        SOAR_PRINT("RSC_CLOSE_VENT\n");
         break;
     case Proto::FcbCommand::Command::RSC_GOTO_FILL:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_GOTO_FILL));
+        SOAR_PRINT("RSC_GOTO_FILL\n");
         break;
     case Proto::FcbCommand::Command::RSC_ARM_CONFIRM_1:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_ARM_CONFIRM_1));
+        SOAR_PRINT("RSC_ARM_CONFIRM_1\n");
         break;
     case Proto::FcbCommand::Command::RSC_ARM_CONFIRM_2:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_ARM_CONFIRM_2));
+        SOAR_PRINT("RSC_ARM_CONFIRM_2\n");
         break;
     case Proto::FcbCommand::Command::RSC_GOTO_ARM:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_GOTO_ARM));
+        SOAR_PRINT("RSC_GOTO_ARM\n");
         break;
     case Proto::FcbCommand::Command::RSC_GOTO_PRELAUNCH:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_GOTO_PRELAUNCH));
+        SOAR_PRINT("RSC_GOTO_PRELAUNCH\n");
         break;
     case Proto::FcbCommand::Command::RSC_IGNITION_TO_LAUNCH: // This is the ignition confirmation (we need a button to send this)
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_IGNITION_TO_LAUNCH));
+        SOAR_PRINT("RSC_IGNITION_TO_LAUNCH\n");
         break;
     case Proto::FcbCommand::Command::RSC_GOTO_TEST:
         FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, (uint16_t)RSC_GOTO_TEST));
+        SOAR_PRINT("RSC_GOTO_TEST\n");
         break;
     default:
         break;
@@ -133,7 +143,10 @@ void RadioProtocolTask::HandleProtobufControlMesssage(EmbeddedProto::ReadBufferF
 
     // Verify the source and target nodes, if they aren't as expected, do nothing
     if (msg.get_source() != Proto::Node::NODE_FSB || msg.get_target() != Proto::Node::NODE_FCB)
+    {
+    	SOAR_PRINT("Wrong target from proto: %d or source: %d\n", msg.get_source(), msg.get_target() );
         return;
+    }
 
     // Handle based on the message type
     if(msg.has_hb()) {
@@ -177,8 +190,7 @@ void RadioProtocolTask::HandleProtobufControlMesssage(EmbeddedProto::ReadBufferF
         {
             uint32_t paramMs = msg.get_sys_ctrl().get_cmd_param();
             paramMs = (paramMs > 0xFFFF) ? 0xFFFE : paramMs;
-            // TODO NEW
-//          TelemetryTask::Inst().SendCommand(Command(TELEMETRY_CHANGE_PERIOD, paramMs));
+            TelemetryTask::Inst().SendCommand(Command(TELEMETRY_CHANGE_PERIOD, paramMs));
         }
     }
 }

@@ -19,6 +19,8 @@
 #include "CANTask.hpp"
 #include "WatchdogTask.hpp"
 #include "RadioProtoTask.hpp"
+#include "TelemetryTask.hpp"
+//#include "PressureTransducerTask.hpp"
 
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
@@ -39,6 +41,8 @@ void run_main() {
 	DebugTask::Inst().InitTask();
 	CANTask::Inst().InitTask();
 	RadioProtocolTask::Inst().InitTask();
+	TelemetryTask::Inst().InitTask();
+//	PressureTransducerTask::Inst().InitTask();
 
 	// Flight Task that will implement and start the state machine
 	// HB
@@ -58,7 +62,7 @@ void run_main() {
     SOAR_PRINT("\n-- CUBE SYSTEM --\n");
     SOAR_PRINT("System Reset Reason: [TODO]\n"); //TODO: System reset reason can be implemented via. Flash storage
     SOAR_PRINT("Current System Free Heap: %d Bytes\n", xPortGetFreeHeapSize());
-    SOAR_PRINT("Lowest Ever Free Heap: %d Bytes\n\n", xPortGetMinimumEverFreeHeapSize());
+//    SOAR_PRINT("Lowest Ever Free Heap: %d Bytes\n\n", xPortGetMinimumEverFreeHeapSize());
     // Start the Scheduler
     // Guidelines:
     // - Be CAREFUL with race conditions after osKernelStart

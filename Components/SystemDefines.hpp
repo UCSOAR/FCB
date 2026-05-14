@@ -44,6 +44,7 @@ enum GLOBAL_COMMANDS : uint8_t
 	PROTOCOL_COMMAND,           // Protocol command, used for commands to the Protocol Task
 	DATA_BROKER_COMMAND,
 	GPS_COMMAND,
+	TELEMETRY_CHANGE_PERIOD
 };
 
 /* Cube++ Optional Code Configuration ------------------------------------------------------------------*/
@@ -89,6 +90,17 @@ constexpr uint16_t TASK_FLASH_STACK_DEPTH_WORDS = 1024; // Size of the flash tas
 constexpr uint8_t WATCHDOG_TASK_RTOS_PRIORITY = 3;            // Priority of the watchdog task
 constexpr uint8_t WATCHDOG_TASK_QUEUE_DEPTH_OBJS = 10;        // Size of the watchdog task queue
 constexpr uint16_t WATCHDOG_TASK_STACK_DEPTH_WORDS = 512;        // Size of the watchdog task stack
+
+// TELEMETRY Task
+constexpr uint8_t TELEMETRY_TASK_RTOS_PRIORITY = 3;            // Priority of the telemetry task
+constexpr uint8_t TELEMETRY_TASK_QUEUE_DEPTH_OBJS = 10;        // Size of the telemetry task queue
+constexpr uint16_t TELEMETRY_TASK_STACK_DEPTH_WORDS = 512;        // Size of the telemetry task stack
+
+// PRESSURE TRANSDUCER TASK
+constexpr uint8_t TASK_PRESSURE_TRANSDUCER_PRIORITY = 1;			// Priority of the pressure transducer task
+constexpr uint8_t TASK_PRESSURE_TRANSDUCER_QUEUE_DEPTH_OBJS = 10;		// Size of the pressure transducer task queue
+constexpr uint16_t TASK_PRESSURE_TRANSDUCER_STACK_DEPTH_WORDS = 512;		// Size of the pressure transducer task stack
+
 
 #endif // CUBE_MAIN_SYSTEM_DEFINES_H
 

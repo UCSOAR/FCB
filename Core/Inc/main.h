@@ -75,6 +75,10 @@ void Error_Handler(void);
 #define HEATER_GPIO_Port GPIOE
 #define BARO11_CS_Pin GPIO_PIN_0
 #define BARO11_CS_GPIO_Port GPIOA
+#define PT1_Pin GPIO_PIN_6
+#define PT1_GPIO_Port GPIOA
+#define PT2_Pin GPIO_PIN_5
+#define PT2_GPIO_Port GPIOC
 #define SPI_FLASH_CS_Pin GPIO_PIN_2
 #define SPI_FLASH_CS_GPIO_Port GPIOB
 #define BUZZER_Pin GPIO_PIN_7
