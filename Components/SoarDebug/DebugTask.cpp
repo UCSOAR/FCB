@@ -15,6 +15,8 @@
 #include "stm32h7xx_hal.h"
 #include "FlashTask.hpp"
 #include "CANTask.hpp"
+#include "GPIO.hpp"
+#include "PressureTransducerTask.hpp"
 
 // External Tasks (to send debug commands to)
 
@@ -137,6 +139,24 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		);
 	}
 
+	else if (strcmp(msg, "proto") == 0)
+	{
+		SOAR_PRINT("send proto\n");
+		FlightTask::Inst().SendCommand(Command(REQUEST_COMMAND, (uint16_t)FT_REQUEST_TRANSMIT_STATE));
+	}
+	else if (strcmp(msg, "vopen") == 0)
+	{
+		GPIO::Vent::Open();
+	}
+	else if (strcmp(msg, "vclose") == 0)
+	{
+		GPIO::Vent::Close();
+	}
+	else if (strcmp(msg, "ptc") == 0) {
+		SOAR_PRINT("Debug 'Pressure Transducer' Sample and Output Received\n");
+		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_NEW_SAMPLE));
+		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_DEBUG));
+	}
 	else
 	{
 	// Single character command, or unknown command

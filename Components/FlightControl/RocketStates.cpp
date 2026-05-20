@@ -14,6 +14,7 @@
 #include "SystemDefines.hpp"
 #include "GPIO.hpp"
 #include "TimerTransitions.hpp"
+#include "WatchdogTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -796,8 +797,7 @@ RocketState Abort::OnEnter()
  */
 RocketState Abort::OnExit()
 {
-	// TODO NEW
-//    WatchdogTask::Inst().SendCommand(Command(HEARTBEAT_COMMAND, RADIOHB_REQUEST));
+   WatchdogTask::Inst().SendCommand(Command(HEARTBEAT_COMMAND, RADIOHB_REQUEST));
     return rsStateID;
 }
 

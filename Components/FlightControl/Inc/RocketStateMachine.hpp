@@ -14,8 +14,7 @@
  * INCLUDES
  ************************************/
 #include "Command.hpp"
-// TODO NEW: Include proto header and code when integrated
-//#include "CoreProto.h"
+#include "CoreProto.h"
 
 /************************************
  * MACROS AND DEFINES
@@ -76,9 +75,9 @@ enum RocketControlCommands
     RSC_ANY_TO_ABORT,       // Transition to ABORT state - available from all states except for IGNITION/LAUNCH/BURN
     RSC_OPEN_VENT,   // Open the vent valve
     RSC_CLOSE_VENT,  // Close the vent valve
-    RSC_OPEN_DRAIN,  // Open the drain valve
-    RSC_CLOSE_DRAIN, // Close the drain valve
-    RSC_MEV_CLOSE,   // Forces MEV to close - ONLY supported in states where it is safe to close the MEV
+    RSC_OPEN_DRAIN,  // Not used for Aegis
+    RSC_CLOSE_DRAIN, // Not used for Aegis
+    RSC_MEV_CLOSE,   // Not used for Aegis
 
     //-- PRELAUNCH --
     RSC_GOTO_FILL, // Transition to the FILL state
@@ -126,9 +125,9 @@ enum RocketControlCommands
     //-- TEST --
     RSC_GOTO_TEST,
 //    RSC_MEV_CLOSE,
-    RSC_TEST_MEV_OPEN,
-    RSC_TEST_MEV_ENABLE,
-    RSC_TEST_MEV_DISABLE,
+    RSC_TEST_MEV_OPEN,      // Not used for Aegis
+    RSC_TEST_MEV_ENABLE,    // Not used for Aegis
+    RSC_TEST_MEV_DISABLE,   // Not used for Aegis
 
     //-- TECHNICAL --
     RSC_NONE   // Invalid command, must be last
@@ -166,8 +165,7 @@ public:
 
     void HandleCommand(Command& cm);
 
-    // TODO NEW
-//    Proto::RocketState GetRocketStateAsProto();
+   Proto::RocketState GetRocketStateAsProto();
 
 protected:
     RocketState TransitionState(RocketState nextState);
