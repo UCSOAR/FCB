@@ -16,6 +16,7 @@
 #include "DataBroker.hpp"
 #include "Task.hpp"
 #include "main.h"
+#include "ProtocolTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -78,6 +79,13 @@ void TCTask::Run(void * pvParams){
         if(res){
         	HandleCommand(cm);
         }
+
+        osDelay(1000);
+
+		float t1 = TCDriver1.ReadThermocoupleTempC();
+		float t2 = TCDriver2.ReadThermocoupleTempC();
+		float t3 = TCDriver3.ReadThermocoupleTempC();
+
     }
 
 }
