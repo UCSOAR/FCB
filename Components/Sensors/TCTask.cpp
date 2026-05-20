@@ -18,6 +18,7 @@
 #include "main.h"
 #include "ProtocolTask.hpp"
 #include "RadioProtoTask.hpp"
+#include "MAX31856_regs.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -69,9 +70,9 @@ void TCTask::Run(void * pvParams){
 	TCDriver3.Init(&hspi2, TC3CS_GPIO_Port, TC3CS_Pin);
 
 
-	TCDriver1.SetCR1((0b0010<<4) | 0b0011);
-	TCDriver2.SetCR1((0b0010<<4) | 0b0011);
-	TCDriver3.SetCR1((0b0010<<4) | 0b0111);
+	TCDriver1.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_K);
+	TCDriver2.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_K);
+	TCDriver3.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_K);
 
 	// cont conv mode
 	TCDriver1.SetCR0(0b10000000);
@@ -103,7 +104,7 @@ void TCTask::HandleCommand(Command& cm){
 	        break;
 	    }
 	    default:
-	        //SOAR_PRINT("PressureTransducerTASK - Received Unsupported Command {%d}\n", cm.GetCommand());
+	        SOAR_PRINT("TCTask - Received Unsupported Command {%d}\n", cm.GetCommand());
 	        break;
 	    }
 	cm.Reset();
