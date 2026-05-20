@@ -21,6 +21,7 @@
 #include "RadioProtoTask.hpp"
 #include "TelemetryTask.hpp"
 #include "PressureTransducerTask.hpp"
+#include "TCTask.hpp"
 
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
@@ -43,6 +44,7 @@ void run_main() {
 	RadioProtocolTask::Inst().InitTask();
 	TelemetryTask::Inst().InitTask();
 	PressureTransducerTask::Inst().InitTask();
+	TCTask::Inst().InitTask();
 
 	// Flight Task that will implement and start the state machine
 	// HB

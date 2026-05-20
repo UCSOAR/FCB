@@ -38,6 +38,7 @@ extern "C" {
 #include "stm32h7xx_ll_pwr.h"
 #include "stm32h7xx_ll_gpio.h"
 #include "stm32h7xx_ll_dma.h"
+#include "stm32h7xx_ll_hsem.h"
 
 #include "stm32h7xx_ll_exti.h"
 
@@ -83,6 +84,12 @@ void Error_Handler(void);
 #define SPI_FLASH_CS_GPIO_Port GPIOB
 #define BUZZER_Pin GPIO_PIN_7
 #define BUZZER_GPIO_Port GPIOE
+#define TC2CS_Pin GPIO_PIN_12
+#define TC2CS_GPIO_Port GPIOB
+#define TC3CS_Pin GPIO_PIN_6
+#define TC3CS_GPIO_Port GPIOC
+#define TC1CS_Pin GPIO_PIN_8
+#define TC1CS_GPIO_Port GPIOA
 #define CAN_STANDBY_Pin GPIO_PIN_10
 #define CAN_STANDBY_GPIO_Port GPIOA
 #define IMU16_INT_Pin GPIO_PIN_15
