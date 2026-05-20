@@ -51,7 +51,7 @@ void TCTask::InitTask()
     BaseType_t rtValue =
         xTaskCreate((TaskFunction_t)TCTask::RunTask,
             (const char*)"TCTask",
-            (uint16_t)TASK_TC_QUEUE_DEPTH_OBJS,
+            (uint16_t)TASK_TC_STACK_DEPTH_WORDS,
             (void*)this,
             (UBaseType_t)TASK_TC_PRIORITY,
             (TaskHandle_t*)&rtTaskHandle);
@@ -63,6 +63,7 @@ void TCTask::InitTask()
 
 void TCTask::Run(void * pvParams){
 
+	osDelay(100);
 	TCDriver1.Init(&hspi2, TC1CS_GPIO_Port, TC1CS_Pin);
 	TCDriver2.Init(&hspi2, TC2CS_GPIO_Port, TC2CS_Pin);
 	TCDriver3.Init(&hspi2, TC3CS_GPIO_Port, TC3CS_Pin);
@@ -95,7 +96,7 @@ void TCTask::HandleCommand(Command& cm){
 	        break;
 	    }
 	    default:
-	        SOAR_PRINT("PressureTransducerTASK - Received Unsupported Command {%d}\n", cm.GetCommand());
+	        //SOAR_PRINT("PressureTransducerTASK - Received Unsupported Command {%d}\n", cm.GetCommand());
 	        break;
 	    }
 	cm.Reset();
@@ -120,7 +121,11 @@ void TCTask::HandleRequestCommand(uint16_t taskCommand)
     	TransmitProtocolTCData();
         break;
     case TC_REQUEST_DEBUG:
-        SOAR_PRINT("|TC_TASK| TC (C): %f, %f, %f, MCU Timestamp: %u\r\n", data->temp1, data->temp2, data->temp3,
+
+        SOAR_PRINT("|TC_TASK| TC (C): %d.%d, %d.%d, %d.%d, MCU Timestamp: %u\r\n",
+        		int(data->temp1),abs(int(data->temp1*100-int(data->temp1)*100)),
+				int(data->temp2),abs(int(data->temp2*100-int(data->temp2)*100)),
+				int(data->temp3),abs(int(data->temp3*100-int(data->temp3)*100)),
         		TICKS_TO_MS(xTaskGetTickCount()));
         break;
     default:
@@ -132,9 +137,12 @@ void TCTask::HandleRequestCommand(uint16_t taskCommand)
 void TCTask::SampleTC()
 {
 
-	data->temp1 = TCDriver1.ReadThermocoupleTempC();
-	data->temp2 = TCDriver2.ReadThermocoupleTempC();
-	data->temp3 = TCDriver3.ReadThermocoupleTempC();
+
+	data->temp3 = TCDriver1.ReadThermocoupleTempC();
+
+	data->temp1 = TCDriver2.ReadThermocoupleTempC();
+
+	data->temp2 = TCDriver3.ReadThermocoupleTempC();
 
 }
 

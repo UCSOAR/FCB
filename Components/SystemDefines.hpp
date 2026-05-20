@@ -104,7 +104,7 @@ constexpr uint16_t TASK_PRESSURE_TRANSDUCER_STACK_DEPTH_WORDS = 512;		// Size of
 // THERMOCOUPLE TASK
 constexpr uint8_t TASK_TC_PRIORITY = 1;			// Priority of the TC task
 constexpr uint8_t TASK_TC_QUEUE_DEPTH_OBJS = 10;		// Size of the TC task queue
-constexpr uint16_t TASK_TCR_STACK_DEPTH_WORDS = 512;		// Size of the TC task stack
+constexpr uint16_t TASK_TC_STACK_DEPTH_WORDS = 512;		// Size of the TC task stack
 
 
 #endif // CUBE_MAIN_SYSTEM_DEFINES_H
