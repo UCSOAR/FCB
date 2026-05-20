@@ -68,10 +68,17 @@ void TCTask::Run(void * pvParams){
 	TCDriver2.Init(&hspi2, TC2CS_GPIO_Port, TC2CS_Pin);
 	TCDriver3.Init(&hspi2, TC3CS_GPIO_Port, TC3CS_Pin);
 
+
+	TCDriver1.SetCR1((0b0010<<4) | 0b0011);
+	TCDriver2.SetCR1((0b0010<<4) | 0b0011);
+	TCDriver3.SetCR1((0b0010<<4) | 0b0111);
+
 	// cont conv mode
 	TCDriver1.SetCR0(0b10000000);
 	TCDriver2.SetCR0(0b10000000);
 	TCDriver3.SetCR0(0b10000000);
+
+
 
     while (1) {
         /* Process commands in blocking mode */
@@ -138,11 +145,11 @@ void TCTask::SampleTC()
 {
 
 
-	data->temp3 = TCDriver1.ReadThermocoupleTempC();
+	data->temp1 = TCDriver1.ReadThermocoupleTempC();
 
-	data->temp1 = TCDriver2.ReadThermocoupleTempC();
+	data->temp2 = TCDriver2.ReadThermocoupleTempC();
 
-	data->temp2 = TCDriver3.ReadThermocoupleTempC();
+	data->temp3 = TCDriver3.ReadThermocoupleTempC();
 
 }
 
