@@ -611,10 +611,13 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3|HEATER_Pin|BUZZER_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, BARO07_CS_Pin|IMU32_CS_Pin|GPIO_PIN_7, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, BARO07_CS_Pin|IMU32_CS_Pin|TC3CS_Pin|GPIO_PIN_7, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, BARO11_CS_Pin|MAG_CS_Pin|CAN_STANDBY_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, BARO11_CS_Pin|MAG_CS_Pin|TC1CS_Pin|CAN_STANDBY_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(TC2CS_GPIO_Port, TC2CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PE3 HEATER_Pin BUZZER_Pin */
   GPIO_InitStruct.Pin = GPIO_PIN_3|HEATER_Pin|BUZZER_Pin;
@@ -629,15 +632,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(VENT_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : BARO07_CS_Pin IMU32_CS_Pin PC7 */
-  GPIO_InitStruct.Pin = BARO07_CS_Pin|IMU32_CS_Pin|GPIO_PIN_7;
+  /*Configure GPIO pins : BARO07_CS_Pin IMU32_CS_Pin TC3CS_Pin PC7 */
+  GPIO_InitStruct.Pin = BARO07_CS_Pin|IMU32_CS_Pin|TC3CS_Pin|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : BARO11_CS_Pin MAG_CS_Pin CAN_STANDBY_Pin */
-  GPIO_InitStruct.Pin = BARO11_CS_Pin|MAG_CS_Pin|CAN_STANDBY_Pin;
+  /*Configure GPIO pins : BARO11_CS_Pin MAG_CS_Pin TC1CS_Pin CAN_STANDBY_Pin */
+  GPIO_InitStruct.Pin = BARO11_CS_Pin|MAG_CS_Pin|TC1CS_Pin|CAN_STANDBY_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -648,6 +651,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : TC2CS_Pin */
+  GPIO_InitStruct.Pin = TC2CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(TC2CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PC9 */
   GPIO_InitStruct.Pin = GPIO_PIN_9;
