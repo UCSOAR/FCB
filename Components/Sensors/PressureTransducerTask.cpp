@@ -27,7 +27,7 @@
  ************************************/
 static constexpr uint32_t PT_ADC_POLL_TIMEOUT_MS = 50;
 // TODO NEW JUST EXPERIMENT SHOULD BE 3.3V
-static constexpr double ADC_VREF = 3.3;
+static constexpr double ADC_VREF = 3.289;
 static constexpr double ADC_MAX_16BIT = 65535.0;
 // Same scale factor from the old F405 code
 static constexpr double PRESSURE_SCALE = 1.5220883534136546;
@@ -164,9 +164,10 @@ bool PressureTransducerTask::ReadADC(ADC_HandleTypeDef* hadc, uint32_t& adcRaw)
  */
 int32_t PressureTransducerTask::ConvertADCToPressure_mPSI(uint32_t adcRaw)
 {
-    double adcVoltage = (ADC_VREF / ADC_MAX_16BIT) * static_cast<double>((adcRaw-1753));
+	// 2.849V
+    double adcVoltage = (ADC_VREF / ADC_MAX_16BIT) * static_cast<double>((adcRaw));
 
-    double transducerVoltage = adcVoltage * PRESSURE_SCALE;
+    double transducerVoltage = adcVoltage * 1.5;
 
     double pressure_mPSI = (250.0 * transducerVoltage - 125.0) * 1000.0;
 
@@ -179,6 +180,22 @@ int32_t PressureTransducerTask::ConvertADCToPressure_mPSI(uint32_t adcRaw)
  */
 void PressureTransducerTask::SamplePressureTransducer()
 {
+	static bool adc1Calibrated = false;
+
+	/* Calibrate ADC once before conversions */
+	if (!adc1Calibrated)
+	{
+		HAL_ADC_Stop(&hadc1);
+
+		if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED) != HAL_OK)
+		{
+			Error_Handler();
+		}
+
+		adc1Calibrated = true;
+		osDelay(10);
+	}
+
 	uint32_t adc1Raw = 0;
 	if (ReadADC(&hadc1, adc1Raw))
 	{

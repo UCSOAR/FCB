@@ -152,6 +152,14 @@ void DebugTask::HandleDebugMessage(const char *msg)
 	{
 		GPIO::Vent::Close();
 	}
+	else if (strcmp(msg, "hopen") == 0)
+	{
+		GPIO::Heater::Open();
+	}
+	else if (strcmp(msg, "hclose") == 0)
+	{
+		GPIO::Heater::Close();
+	}
 	else if (strcmp(msg, "ptc") == 0) {
 		SOAR_PRINT("Debug 'Pressure Transducer' Sample and Output Received\n");
 		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_NEW_SAMPLE));

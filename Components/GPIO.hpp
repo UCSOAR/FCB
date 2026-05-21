@@ -36,8 +36,8 @@ namespace GPIO
 {
 	namespace Heater
 	{
-		inline void Open() { HAL_GPIO_WritePin(HEATER_GPIO_Port, HEATER_Pin, GPIO_PIN_RESET); }
-		inline void Close() { HAL_GPIO_WritePin(HEATER_GPIO_Port, HEATER_Pin, GPIO_PIN_SET); }
+		inline void Open() { HAL_GPIO_WritePin(HEATER_GPIO_Port, HEATER_Pin, GPIO_PIN_SET); }
+		inline void Close() { HAL_GPIO_WritePin(HEATER_GPIO_Port, HEATER_Pin, GPIO_PIN_RESET); }
 
 		inline bool IsOpen() { return HAL_GPIO_ReadPin(HEATER_GPIO_Port, HEATER_Pin) == GPIO_PIN_RESET; }
 	}

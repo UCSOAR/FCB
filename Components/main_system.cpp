@@ -44,13 +44,8 @@ void run_main() {
 	TelemetryTask::Inst().InitTask();
 	PressureTransducerTask::Inst().InitTask();
 
-	// Flight Task that will implement and start the state machine
-	// HB
-	// CAN Communication Task - messages with all other boards
-	// FSB Communication Task (Prev called TelemetryTask)
 	// PT
 	// TC
-	// Heater & Vent & LEDs in GPIO hpp
 	// Flash -- State Recovery
 	// HDITask
 	// Hardware WTDG?
