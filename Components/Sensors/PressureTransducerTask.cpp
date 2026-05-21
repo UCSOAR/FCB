@@ -167,7 +167,7 @@ int32_t PressureTransducerTask::ConvertADCToPressure_mPSI(uint32_t adcRaw)
 	// 2.849V
     double adcVoltage = (ADC_VREF / ADC_MAX_16BIT) * static_cast<double>((adcRaw));
 
-    double transducerVoltage = adcVoltage * 1.5;
+    double transducerVoltage = adcVoltage * PRESSURE_SCALE;
 
     double pressure_mPSI = (250.0 * transducerVoltage - 125.0) * 1000.0;
 
