@@ -68,17 +68,13 @@ RocketSM::RocketSM(RocketState startingState, bool enterStartingState)
     }
 
 
-    RocketState recovered = recoverer.GetMostRecentState();
-    if(recovered != RocketState::RS_NONE) {
-    	SOAR_PRINT("Recovered state %d\n",recovered);
-    	TransitionState(recovered);
-    }
-
 
     SOAR_PRINT("Rocket State Machine Started in [ %s ] state\n", BaseRocketState::StateToString(rs_currentState->GetStateID()));
     // TODO NEW
     //    HDITask::Inst().SendCommand(Command(REQUEST_COMMAND, rs_currentState->GetStateID()));
 }
+
+#include "StateReco.hpp"
 
 /**
  * @brief Handles state transitions
@@ -114,7 +110,7 @@ RocketState RocketSM::TransitionState(RocketState nextState)
 
     SOAR_PRINT("ROCKET STATE TRANSITION [ %s ] --> [ %s ]\n", BaseRocketState::StateToString(previousState), BaseRocketState::StateToString(rs_currentState->GetStateID()));
 
-    recoverer.SaveState(nextState);
+    StateRecoverer::Inst().SaveState(nextState);
 
     // Return the state after the transition
     return rs_currentState->GetStateID();

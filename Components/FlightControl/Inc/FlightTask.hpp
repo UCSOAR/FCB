@@ -17,6 +17,7 @@
 #include "SystemDefines.hpp"
 #include "RocketStateMachine.hpp"
 #include "RocketStates.hpp"
+#include "StateReco.hpp"
 
 /************************************
  * MACROS AND DEFINES
@@ -64,6 +65,7 @@ private:
     // Private Variables
     RocketSM* rsm_;
     uint16_t firstStateSent_;
+
 };
 
 /************************************
