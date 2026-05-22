@@ -16,6 +16,7 @@
 #include "Command.hpp"
 #include "CoreProto.h"
 
+
 /************************************
  * MACROS AND DEFINES
  ************************************/
@@ -155,6 +156,8 @@ protected:
     RocketState rsStateID = RS_NONE;    //The name of the state we're in
 };
 
+#include "StateReco.hpp"
+
 /**
  * @brief Rocket State Machine
  */
@@ -173,6 +176,7 @@ protected:
     // Variables
     BaseRocketState* stateArray[RS_NONE];
     BaseRocketState* rs_currentState;
+    StateRecoverer recoverer = {1000,2};
 };
 
 /************************************

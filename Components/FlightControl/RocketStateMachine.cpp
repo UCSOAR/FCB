@@ -13,6 +13,7 @@
 #include "RocketStateMachine.hpp"
 #include "RocketStates.hpp"
 #include "SystemDefines.hpp"
+#include "FlashTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -56,12 +57,23 @@ RocketSM::RocketSM(RocketState startingState, bool enterStartingState)
 //        SOAR_ASSERT(stateArray[i]->GetStateID() == i);
 //    }
 
+
     rs_currentState = stateArray[startingState];
+
+
 
     // If we need to run OnEnter for the starting state, do so
     if (enterStartingState) {
         rs_currentState->OnEnter();
     }
+
+
+    RocketState recovered = recoverer.GetMostRecentState();
+    if(recovered != RocketState::RS_NONE) {
+    	SOAR_PRINT("Recovered state %d\n",recovered);
+    	TransitionState(recovered);
+    }
+
 
     SOAR_PRINT("Rocket State Machine Started in [ %s ] state\n", BaseRocketState::StateToString(rs_currentState->GetStateID()));
     // TODO NEW
@@ -101,6 +113,8 @@ RocketState RocketSM::TransitionState(RocketState nextState)
     rs_currentState->OnEnter();
 
     SOAR_PRINT("ROCKET STATE TRANSITION [ %s ] --> [ %s ]\n", BaseRocketState::StateToString(previousState), BaseRocketState::StateToString(rs_currentState->GetStateID()));
+
+    recoverer.SaveState(nextState);
 
     // Return the state after the transition
     return rs_currentState->GetStateID();
