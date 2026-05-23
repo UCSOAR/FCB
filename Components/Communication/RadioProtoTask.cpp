@@ -129,79 +129,100 @@ void RadioProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFi
         SOAR_PRINT("RSC_GOTO_TEST\n");
         break;
 
-    case Proto::FcbCommand::Command::RSC_CAM1_DISABLE:
+    case Proto::FcbCommand::Command::RSC_CAM1_DISABLE: {
     	RPB_CAMERA_POWER_COMMAND cmd;
     	cmd.camera = 0;
     	cmd.enable = false;
     	SOAR_PRINT("cam1 disable\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_POWER_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
-    case Proto::FcbCommand::Command::RSC_CAM2_DISABLE:
+    case Proto::FcbCommand::Command::RSC_CAM2_DISABLE: {
     	RPB_CAMERA_POWER_COMMAND cmd;
     	cmd.camera = 1;
     	cmd.enable = false;
     	SOAR_PRINT("cam2 disable\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_POWER_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
-    case Proto::FcbCommand::Command::RSC_CAM3_DISABLE:
+    case Proto::FcbCommand::Command::RSC_CAM3_DISABLE: {
     	RPB_CAMERA_POWER_COMMAND cmd;
     	cmd.camera = 2;
     	cmd.enable = false;
     	SOAR_PRINT("cam3 disable\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_POWER_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
-    case Proto::FcbCommand::Command::RSC_CAM1_ENABLE:
+    case Proto::FcbCommand::Command::RSC_CAM1_ENABLE: {
     	RPB_CAMERA_POWER_COMMAND cmd;
     	cmd.camera = 0;
     	cmd.enable = true;
     	SOAR_PRINT("cam1 enable\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_POWER_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
-    case Proto::FcbCommand::Command::RSC_CAM2_ENABLE:
+    case Proto::FcbCommand::Command::RSC_CAM2_ENABLE: {
     	RPB_CAMERA_POWER_COMMAND cmd;
     	cmd.camera = 1;
     	cmd.enable = true;
     	SOAR_PRINT("cam2 enable\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_POWER_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
-    case Proto::FcbCommand::Command::RSC_CAM3_ENABLE:
+    case Proto::FcbCommand::Command::RSC_CAM3_ENABLE: {
     	RPB_CAMERA_POWER_COMMAND cmd;
     	cmd.camera = 2;
     	cmd.enable = true;
     	SOAR_PRINT("cam3 enable\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_POWER_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
-    case Proto::FcbCommand::Command::RSC_CAMERA1_SWITCH:
+    case Proto::FcbCommand::Command::RSC_CAMERA1_SWITCH: {
     	RPB_CAMERA_SWITCH_COMMAND cmd;
     	cmd.camera = 0;
-    	cmd.enable = true;
     	SOAR_PRINT("cam1 switch\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SWITCH_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
-    case Proto::FcbCommand::Command::RSC_CAMERA2_SWITCH:
+    case Proto::FcbCommand::Command::RSC_CAMERA2_SWITCH: {
     	RPB_CAMERA_SWITCH_COMMAND cmd;
     	cmd.camera = 1;
-    	cmd.enable = true;
     	SOAR_PRINT("cam2 switch\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SWITCH_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
-    case Proto::FcbCommand::Command::RSC_CAMERA3_SWITCH:
+    case Proto::FcbCommand::Command::RSC_CAMERA3_SWITCH: {
     	RPB_CAMERA_SWITCH_COMMAND cmd;
     	cmd.camera = 2;
-    	cmd.enable = true;
     	SOAR_PRINT("cam3 switch\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SWITCH_COMMAND_LOGINDEX, (uint8_t*)&cmd);
     	break;
+    }
 
 
+    case Proto::FcbCommand::Command::RSC_AIR_BRAKES_DISABLE: {
+    	RPB_AIR_BRAKES_COMMAND cmd;
+    	cmd.openAirBrakes = false;
+    	SOAR_PRINT("airbrakes disable\n");
+    	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_AIR_BRAKES_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+		break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_AIR_BRAKES_ENABLE: {
+    	RPB_AIR_BRAKES_COMMAND cmd;
+    	cmd.openAirBrakes = true;
+    	SOAR_PRINT("airbrakes enable\n");
+    	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_AIR_BRAKES_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+		break;
+    }
     default:
         break;
     }
