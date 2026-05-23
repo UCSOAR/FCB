@@ -17,6 +17,7 @@
 #include "CANTask.hpp"
 #include "GPIO.hpp"
 #include "PressureTransducerTask.hpp"
+#include "TCTask.hpp"
 
 // External Tasks (to send debug commands to)
 
@@ -164,6 +165,11 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		SOAR_PRINT("Debug 'Pressure Transducer' Sample and Output Received\n");
 		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_NEW_SAMPLE));
 		PressureTransducerTask::Inst().SendCommand(Command(REQUEST_COMMAND, PT_REQUEST_DEBUG));
+	}
+	else if (strcmp(msg, "tc") == 0) {
+		SOAR_PRINT("Debug 'thermocouple' Sample and Output Received\n");
+		TCTask::Inst().SendCommand(Command(REQUEST_COMMAND, TC_REQUEST_NEW_SAMPLE));
+		TCTask::Inst().SendCommand(Command(REQUEST_COMMAND, TC_REQUEST_DEBUG));
 	}
 	else
 	{
