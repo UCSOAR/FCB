@@ -70,9 +70,9 @@ void TCTask::Run(void * pvParams){
 	TCDriver3.Init(&hspi2, TC3CS_GPIO_Port, TC3CS_Pin);
 
 
-	TCDriver1.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_K);
-	TCDriver2.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_K);
-	TCDriver3.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_K);
+	TCDriver1.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_T); // Pressure Vessel
+	TCDriver2.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_K); // Dip Tube
+	TCDriver3.SetCR1((0b0011<<4) | MAX31856_REG::CR1_TYPE_K); // Vent/Heater
 
 	// cont conv mode
 	TCDriver1.SetCR0(0b10000000);
@@ -89,7 +89,13 @@ void TCTask::Run(void * pvParams){
         if(res){
         	HandleCommand(cm);
         }
-
+//		  For Debugging - Change ReceiveWait to Receive with 1000ms delay
+//        SampleTC();
+//        SOAR_PRINT("|TC_TASK| \n TC1 (C): %d.%d, \n TC2 (C): %d.%d, \n TC3 (C): %d.%d, \n MCU Timestamp: %u\r\n",
+//                		int(data->temp1),abs(int(data->temp1*100-int(data->temp1)*100)),
+//        				int(data->temp2),abs(int(data->temp2*100-int(data->temp2)*100)),
+//        				int(data->temp3),abs(int(data->temp3*100-int(data->temp3)*100)),
+//                		TICKS_TO_MS(xTaskGetTickCount()));
     }
 
 }
