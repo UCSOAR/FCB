@@ -22,6 +22,7 @@
 #include "TelemetryTask.hpp"
 #include "PressureTransducerTask.hpp"
 #include "TCTask.hpp"
+#include "ActualLoggingTask.hpp"
 
 /* Drivers ------------------------------------------------------------------*/
 namespace Driver {
@@ -35,7 +36,7 @@ namespace Driver {
 */
 void run_main() {
     // Init Tasks
-	WatchdogTask::Inst().InitTask();
+	//WatchdogTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
 	CubeTask::Inst().InitTask();
 	FlightTask::Inst().InitTask();
@@ -45,6 +46,10 @@ void run_main() {
 	TelemetryTask::Inst().InitTask();
 	PressureTransducerTask::Inst().InitTask();
 	TCTask::Inst().InitTask();
+	//FlashTask::Inst().InitTask();
+	//LoggingTask::Inst().InitTask();
+	ActualLoggingTask::Inst().InitTask();
+
 
 	// PT
 	// TC

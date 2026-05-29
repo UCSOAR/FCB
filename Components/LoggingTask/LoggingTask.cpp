@@ -85,6 +85,8 @@ void LoggingTask::InitTask()
 	DataBroker::Subscribe<IMUData>(this);
 	DataBroker::Subscribe<BaroData>(this);
 	DataBroker::Subscribe<MagData>(this);
+	DataBroker::Subscribe<ThermocoupleData>(this);
+
 
 }
 
@@ -206,6 +208,40 @@ void LoggingTask::HandleCommand(Command& cm){
 		LoggingService log(
 		    LoggingDest::FLASH_EXTERN,
 		    data.id == 0 ? LoggingData::BARO07 : LoggingData::BARO11,
+		    buf,
+		    20,                  // full 20-byte slot
+		    LoggingPriority::SECOND
+		);
+
+		err = log.LogData();
+
+		break;
+	}
+	case DataBrokerMessageTypes:: TC_DATA:
+	{
+		ThermocoupleData data = DataBroker::ExtractData<ThermocoupleData>(cm);
+
+		// Get timestamp in ms
+		uint32_t timestamp = xTaskGetTickCount() * portTICK_PERIOD_MS;
+		buf[0] = static_cast<uint8_t>(LoggingData::TC);
+		// Copy timestamp (4 bytes)
+		memcpy(buf + 1, &timestamp, sizeof(timestamp));
+
+		// Copy pressure (4 bytes) and temperature (2 bytes)
+		memcpy(buf + 5, &data.temp1, sizeof(data.temp1));
+		memcpy(buf + 9, &data.temp2, sizeof(data.temp2));
+		memcpy(buf + 13, &data.temp3, sizeof(data.temp3));
+
+		// Pad remaining bytes with zeros so the total slot is 20 bytes
+		memset(buf + 17, 0, 20 - 1 - 16); // 1 byte type + 10 bytes data already, last byte is ID
+
+		// Set ID as the last byte of the 20-byte slot
+
+
+		// Log the full 20-byte sample
+		LoggingService log(
+		    LoggingDest::FLASH_EXTERN,
+		    LoggingData::TC,
 		    buf,
 		    20,                  // full 20-byte slot
 		    LoggingPriority::SECOND

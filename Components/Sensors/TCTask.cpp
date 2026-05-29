@@ -19,6 +19,8 @@
 #include "ProtocolTask.hpp"
 #include "RadioProtoTask.hpp"
 #include "MAX31856_regs.hpp"
+#include "SPIFlash.hpp"
+#include "actualflash.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -62,9 +64,13 @@ void TCTask::InitTask()
 
 }
 
+extern QSPI_HandleTypeDef hqspi;
+
 void TCTask::Run(void * pvParams){
 
+
 	osDelay(100);
+
 	TCDriver1.Init(&hspi2, TC1CS_GPIO_Port, TC1CS_Pin);
 	TCDriver2.Init(&hspi2, TC2CS_GPIO_Port, TC2CS_Pin);
 	TCDriver3.Init(&hspi2, TC3CS_GPIO_Port, TC3CS_Pin);
@@ -85,17 +91,19 @@ void TCTask::Run(void * pvParams){
         /* Process commands in blocking mode */
 
         Command cm;
-        bool res = qEvtQueue->ReceiveWait(cm);
+        bool res = qEvtQueue->Receive(cm);
         if(res){
         	HandleCommand(cm);
         }
 //		  For Debugging - Change ReceiveWait to Receive with 1000ms delay
-//        SampleTC();
+        SampleTC();
 //        SOAR_PRINT("|TC_TASK| \n TC1 (C): %d.%d, \n TC2 (C): %d.%d, \n TC3 (C): %d.%d, \n MCU Timestamp: %u\r\n",
 //                		int(data->temp1),abs(int(data->temp1*100-int(data->temp1)*100)),
 //        				int(data->temp2),abs(int(data->temp2*100-int(data->temp2)*100)),
 //        				int(data->temp3),abs(int(data->temp3*100-int(data->temp3)*100)),
 //                		TICKS_TO_MS(xTaskGetTickCount()));
+
+        osDelay(500);
     }
 
 }
@@ -157,6 +165,8 @@ void TCTask::SampleTC()
 	data->temp2 = TCDriver2.ReadThermocoupleTempC();
 
 	data->temp3 = TCDriver3.ReadThermocoupleTempC();
+
+    DataBroker::Publish<ThermocoupleData>(data);
 
 }
 
