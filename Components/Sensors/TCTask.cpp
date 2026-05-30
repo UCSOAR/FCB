@@ -173,6 +173,7 @@ void TCTask::TransmitProtocolTCData()
 	tempData.set_upper_pv_tc(data->temp1);
 	tempData.set_vent_solenoid_tc(data->temp2);
 	tempData.set_dip_tube_tc(data->temp3);
+	msg.set_fcbtemperature(tempData);
 
 	EmbeddedProto::WriteBufferFixedSize<DEFAULT_PROTOCOL_WRITE_BUFFER_SIZE> writeBuffer;
 	msg.serialize(writeBuffer);
