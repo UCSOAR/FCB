@@ -103,7 +103,15 @@ void FlightTask::Run(void * pvParams)
 //        rsm_ = new RocketSM(RS_ABORT, true);
 //    }
 
-    rsm_ = new RocketSM(RS_ABORT, true);
+    if(!SPIFlash::Inst().GetInitialized())
+    	SPIFlash::Inst().Init();
+
+    RocketState recovered = StateRecoverer::Inst().GetMostRecentState();
+    if(recovered != RocketState::RS_NONE) {
+    	SOAR_PRINT("Recovered state %d\n",recovered);
+    }
+
+    rsm_ = new RocketSM(recovered == RocketState::RS_NONE ? RocketState::RS_ABORT : recovered, true);
 
     while (1) {
         // There's effectively 3 types of tasks... 'Async' and 'Synchronous-Blocking' and 'Synchronous-Non-Blocking'
