@@ -21,20 +21,25 @@
 
 #include "main.h"
 
-MX66L1G45G::MX66L1G45G(QSPI_HandleTypeDef* hqspi) : hqspi_(hqspi) {}
+extern QSPI_HandleTypeDef hqspi;
+
+MX66L1G45G::MX66L1G45G() : hqspi_(&hqspi) {}
 
 bool MX66L1G45G::Init() {
+	if(inited) {
+		return true;
+	}
     if (hqspi_ == nullptr) return false;
 
     HAL_GPIO_WritePin(FLASH_RESET_GPIO_Port, FLASH_RESET_Pin, GPIO_PIN_SET);
 
-    // Resetting the chip or checking ID can be done here
     if (!ReadID(&id, &manid)) return false;
 
+    if(id == 0 && manid == 0) return false;
 
-    // Enable Quad Mode on the flash chip
     if (!EnableQuadMode()) return false;
 
+    inited = true;
     return true;
 }
 

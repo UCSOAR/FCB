@@ -24,6 +24,10 @@
  * CLASS DEFINITIONS
  ************************************/
 extern QSPI_HandleTypeDef hqspi;
+
+enum LOGGING_TASK_CMDS {
+	LOG_STATE_RECO
+};
 /************************************
  * FUNCTION DECLARATIONS
  ************************************/
@@ -53,8 +57,6 @@ class ActualLoggingTask: public Task
 		ActualLoggingTask& operator=(const ActualLoggingTask&);														// Prevent assignment
 		static uint8_t buf[20];
 
-		MX66L1G45G awesomeincredibleflashdriver = {&hqspi};
-
 		constexpr static uint32_t TC_DATA_START_ADDR = 0x00000000;
 		constexpr static uint32_t TC_DATA_END_ADDR   = 0x003fffff;
 
@@ -75,6 +77,7 @@ class ActualLoggingTask: public Task
 			uint32_t timestamp;
 			uint32_t check;
 		};
+
 //		static uint8_t firstAlt;
 };
 
