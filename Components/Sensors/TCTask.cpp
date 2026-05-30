@@ -150,8 +150,6 @@ void TCTask::HandleRequestCommand(uint16_t taskCommand)
 
 void TCTask::SampleTC()
 {
-
-
 	data->temp1 = TCDriver1.ReadThermocoupleTempC();
 
 	data->temp2 = TCDriver2.ReadThermocoupleTempC();
