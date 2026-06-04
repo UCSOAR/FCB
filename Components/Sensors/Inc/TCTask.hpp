@@ -10,6 +10,7 @@
 
 #include "Task.hpp"
 #include "MAX31856MUD+Driver.hpp"
+#include "SensorDataTypes.hpp"
 /************************************
  * MACROS AND DEFINES
  ************************************/
@@ -24,12 +25,7 @@ enum TC_TASK_COMMANDS {
     TC_REQUEST_DEBUG,        // Send the current tc data over the Debug UART
 };
 
-typedef struct
-{
-    float     temp1;
-    float 	  temp2;
-    float	  temp3;
-} ThermocoupleData;
+
 /************************************
  * CLASS DEFINITIONS
  ************************************/

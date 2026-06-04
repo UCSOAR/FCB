@@ -78,10 +78,13 @@ void PressureTransducerTask::Run(void * pvParams)
         Command cm;
 
         //Wait forever for a command
-        qEvtQueue->ReceiveWait(cm);
+        qEvtQueue->Receive(cm);
 
         //Process the command
         HandleCommand(cm);
+
+        SamplePressureTransducer();
+        osDelay(500);
     }
 }
 
@@ -208,6 +211,8 @@ void PressureTransducerTask::SamplePressureTransducer()
 //	{
 //		data->pressure_2 = ConvertADCToPressure_mPSI(adc2Raw);
 //	}
+
+	DataBroker::Publish<PressureTransducerData>(data);
 }
 
 /**

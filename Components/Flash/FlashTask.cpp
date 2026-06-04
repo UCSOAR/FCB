@@ -13,6 +13,7 @@
 #include <cstring>
 #include "stm32h7xx_hal.h"
 #include "LoggingService.hpp"
+#include "main.h"
 
 /* Constants ------------------------------------------------------------------*/
 constexpr uint16_t FLASH_TEST_SECTOR = 32;          // TODO: Move to a reserved sector if needed
@@ -155,6 +156,7 @@ void FlashTask::InitializeFlash()
 {
     SOAR_PRINT("FlashTask::InitializeFlash() - Initializing MX66 flash\n");
 
+	HAL_GPIO_WritePin(FLASH_RESET_GPIO_Port, FLASH_RESET_Pin, GPIO_PIN_SET);
     MX66xxQSPI_ReleaseFromDeepPowerDown();
     MX66xxQSPI_RSTEN();
     MX66xxQSPI_RST();

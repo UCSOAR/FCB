@@ -38,6 +38,7 @@ extern "C" {
 #include "stm32h7xx_ll_pwr.h"
 #include "stm32h7xx_ll_gpio.h"
 #include "stm32h7xx_ll_dma.h"
+#include "stm32h7xx_ll_hsem.h"
 
 #include "stm32h7xx_ll_exti.h"
 
@@ -69,6 +70,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define FLASH_RESET_Pin GPIO_PIN_3
+#define FLASH_RESET_GPIO_Port GPIOE
 #define VENT_Pin GPIO_PIN_4
 #define VENT_GPIO_Port GPIOE
 #define HEATER_Pin GPIO_PIN_5

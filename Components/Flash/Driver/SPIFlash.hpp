@@ -30,6 +30,11 @@ public:
     {
         if (!isInitialized_)
         {
+            MX66xxQSPI_ReleaseFromDeepPowerDown();
+            MX66xxQSPI_RSTEN();
+            MX66xxQSPI_RST();
+            MX66xxQSPI_EQIO_1LINE();
+            MX66xxQSPI_EN4B();
             MX66xxQSPI_Init();
             isInitialized_ = true;
         }

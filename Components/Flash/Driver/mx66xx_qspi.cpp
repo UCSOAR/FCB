@@ -429,6 +429,7 @@ void MX66xxQSPI_WaitForWriteEnd(void)
 bool MX66xxQSPI_Init(void)
 {
     mx66xx_qspi.Lock = 1;
+	HAL_GPIO_WritePin(FLASH_RESET_GPIO_Port, FLASH_RESET_Pin, GPIO_PIN_SET);
 
     while (HAL_GetTick() < 15)
         HAL_Delay(1);
@@ -450,8 +451,8 @@ bool MX66xxQSPI_Init(void)
     mx66xx_qspi.SectorCount = FS_TOTAL_SIZE / FS_SECTOR_SIZE;
     mx66xx_qspi.PageCount = FS_TOTAL_SIZE / FS_PAGE_SIZE;
 
-    MX66xxQSPI_ReadUniqID();
-    MX66xxQSPI_ReadStatusRegister();
+    //MX66xxQSPI_ReadUniqID();
+    //MX66xxQSPI_ReadStatusRegister();
 
     mx66xx_qspi.Lock = 0;
     return mx66xx_qspi.Addr4Byte == 1;

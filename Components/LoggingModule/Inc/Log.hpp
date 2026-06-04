@@ -41,7 +41,8 @@ enum class LoggingData
 	BARO07,
 	BARO11,
 	GPS,
-	FILTER
+	FILTER,
+	TC
 
 };
 
