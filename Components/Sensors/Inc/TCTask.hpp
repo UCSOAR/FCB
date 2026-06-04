@@ -23,6 +23,7 @@ enum TC_TASK_COMMANDS {
     TC_REQUEST_NEW_SAMPLE,// Get a new tc sample, task will be blocked for polling time
     TC_REQUEST_TRANSMIT,    // Send the current tc data over the Radio
     TC_REQUEST_DEBUG,        // Send the current tc data over the Debug UART
+	TC_SET_FLASH_RATE
 };
 
 
@@ -57,6 +58,8 @@ class TCTask: public Task
 	    // Data
 	    ThermocoupleData* data;
 	    uint32_t timestampTC;
+
+	    uint32_t ticksPerFlashLog = 0;
 
 	private:
 		// Private Functions

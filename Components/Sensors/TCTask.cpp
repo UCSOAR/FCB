@@ -21,6 +21,7 @@
 #include "MAX31856_regs.hpp"
 #include "SPIFlash.hpp"
 #include "actualflash.hpp"
+#include "ActualLoggingTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -86,6 +87,7 @@ void TCTask::Run(void * pvParams){
 	TCDriver3.SetCR0(0b10000000);
 
 
+	uint32_t last = 0;
 
     while (1) {
         /* Process commands in blocking mode */
@@ -95,15 +97,23 @@ void TCTask::Run(void * pvParams){
         if(res){
         	HandleCommand(cm);
         }
+    	uint32_t th  = HAL_GetTick();
+#define MAX(a,b) (a > b ? a : b)
+        if(th-last > MAX(ticksPerFlashLog,100) && ticksPerFlashLog != 0) {
+        	SampleTC();
+			last = th;
+			DataBroker::Publish<ThermocoupleData>(data);
+			//SOAR_PRINT("tc\n");
+        }
 //		  For Debugging - Change ReceiveWait to Receive with 1000ms delay
-        SampleTC();
+//        SampleTC();
 //        SOAR_PRINT("|TC_TASK| \n TC1 (C): %d.%d, \n TC2 (C): %d.%d, \n TC3 (C): %d.%d, \n MCU Timestamp: %u\r\n",
 //                		int(data->temp1),abs(int(data->temp1*100-int(data->temp1)*100)),
 //        				int(data->temp2),abs(int(data->temp2*100-int(data->temp2)*100)),
 //        				int(data->temp3),abs(int(data->temp3*100-int(data->temp3)*100)),
 //                		TICKS_TO_MS(xTaskGetTickCount()));
 
-        osDelay(500);
+//        osDelay(500);
     }
 
 }
@@ -115,6 +125,10 @@ void TCTask::HandleCommand(Command& cm){
 	        HandleRequestCommand(cm.GetTaskCommand());
 	    }
 	    case TASK_SPECIFIC_COMMAND: {
+	    	if(cm.GetTaskCommand() == TC_SET_FLASH_RATE) {
+	    		ticksPerFlashLog = *(uint32_t*)cm.GetDataPointer();
+	    		SOAR_PRINT("tc rate %d\n",ticksPerFlashLog);
+	    	}
 	        break;
 	    }
 	    default:
@@ -164,7 +178,7 @@ void TCTask::SampleTC()
 
 	data->temp3 = TCDriver3.ReadThermocoupleTempC();
 
-    DataBroker::Publish<ThermocoupleData>(data);
+    //DataBroker::Publish<ThermocoupleData>(data);
 
 }
 

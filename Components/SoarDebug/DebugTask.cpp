@@ -102,6 +102,7 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		int32_t state = ExtractIntParameter(msg, 4);
 		if (state != ERRVAL && state > 0 && state < UINT16_MAX)
 			FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, state));
+
 	}
 
 	//-- SYSTEM / CHAR COMMANDS -- (Must be last)

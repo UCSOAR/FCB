@@ -111,7 +111,7 @@ void FlightTask::Run(void * pvParams)
     }
 
     rsm_ = new RocketSM(recovered == RocketState::RS_NONE ? RocketState::RS_ABORT : recovered, true);
-
+    uint16_t i = 0;
     while (1) {
         // There's effectively 3 types of tasks... 'Async' and 'Synchronous-Blocking' and 'Synchronous-Non-Blocking'
         // Asynchronous tasks don't require a fixed-delay and can simply delay using xQueueReceive, it will immedietly run the next task
@@ -134,10 +134,20 @@ void FlightTask::Run(void * pvParams)
 
         //Process commands in blocking mode (TODO: Change to instant-processing once complete HID/DisplayTask)
         Command cm;
-        bool res = qEvtQueue->ReceiveWait(cm);
+        bool res = qEvtQueue->Receive(cm);
         if(res)
             HandleCommand(cm);
 
+        i++;
+        if(i > 3000) {
+        	i = 0;
+        	if(rsm_->GetRocketStateAsProto() == Proto::RocketState::RS_TEST) {
+        	rsm_->TransitionState(RocketState::RS_LAUNCH);
+        	} else {
+            	rsm_->TransitionState(RocketState::RS_TEST);
+        	}
+        }
+        osDelay(1);
     }
 }
 

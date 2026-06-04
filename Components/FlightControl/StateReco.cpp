@@ -61,7 +61,7 @@ StateRecoverer::RecoSectorIndex StateRecoverer::GetMostRecentValid() {
 			continue;
 		}
 
-		if(thisSave.checksum == GetChecksum(thisSave)) {
+		if(thisSave.checksum == GetChecksum(thisSave) && thisSave.state < RocketState::RS_NONE) {
 			if(thisSave.gen > highestSave.gen ||
 					(thisSave.gen == highestSave.gen && thisSave.tick > highestSave.tick) || !foundValid) {
 				highestSave = thisSave;
