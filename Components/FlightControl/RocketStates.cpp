@@ -15,6 +15,7 @@
 #include "GPIO.hpp"
 #include "TimerTransitions.hpp"
 #include "WatchdogTask.hpp"
+#include "CANTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -593,6 +594,10 @@ RocketState Braking::OnEnter()
 {
     // Assert vent/drain state
     GPIO::Vent::Close();
+
+    RPB_AIR_BRAKES_COMMAND cmd;
+    cmd.openAirBrakes = true;
+    CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_AIR_BRAKES_COMMAND_LOGINDEX, (uint8_t*)&cmd);
 
 	TimerTransitions::Inst().DescentSequence();
     return rsStateID;
