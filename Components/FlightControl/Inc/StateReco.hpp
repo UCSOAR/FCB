@@ -6,25 +6,25 @@
  */
 #include <cstdint>
 #include "RocketStates.hpp"
-#include "SPIFlash.hpp"
+#include "actualflash.hpp"
 
 #ifndef FLIGHTCONTROL_INC_STATERECO_HPP_
 #define FLIGHTCONTROL_INC_STATERECO_HPP_
 
 #define STATE_RECO_INVALID_IDX (sectorCount+1)
 #define STATE_RECO_INVALID_GEN (0xffffffff)
-#define STATE_RECO_SECTOR_START (2000)
+#define STATE_RECO_SECTOR_START (0x00800000 / 4096)
 #define STATE_RECO_SECTOR_COUNT (2)
 
 class StateRecoverer {
 public:
-	static StateRecoverer Inst() {
+	static StateRecoverer& Inst() {
 		static StateRecoverer s(STATE_RECO_SECTOR_START,STATE_RECO_SECTOR_COUNT);
 		return s;
 	}
 
 	StateRecoverer(uint32_t sectorStart, uint32_t sectorCount) : sectorStart(sectorStart), sectorCount(sectorCount) {
-		SPIFlash::Inst().Init();
+		MX66L1G45G::Inst().Init();
 		RecoSectorIndex recent = GetMostRecentValid();
 		if(recent == STATE_RECO_INVALID_IDX) {
 			generation = 1;
