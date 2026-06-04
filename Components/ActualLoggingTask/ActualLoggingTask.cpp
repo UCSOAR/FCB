@@ -81,7 +81,7 @@ void ActualLoggingTask::InitTask()
 
 void ActualLoggingTask::Run(void * pvParams){
 
-	osDelay(50);
+	osDelay(5);
 	MX66L1G45G::Inst().Init();
 	//awesomeincredibleflashdriver.Init();
 	osDelay(200);

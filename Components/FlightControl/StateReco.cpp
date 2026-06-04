@@ -8,7 +8,7 @@
 
 
 #include "StateReco.hpp"
-
+#include <cstring>
 
 
 RocketState StateRecoverer::GetMostRecentState() {
@@ -43,8 +43,10 @@ bool StateRecoverer::SaveState(RocketState state) {
 
 uint32_t StateRecoverer::GetChecksum(StateSave save) const {
 	// the specifics of this dont matter as long as its unique
-	uint32_t buf[] = {save.state,save.tick,save.gen};
-	return HAL_CRC_Calculate(&hcrc, &buf[0], sizeof(buf));
+	uint8_t buf[sizeof(save)];
+	memcpy(buf,&save,sizeof(save));
+	return HAL_CRC_Calculate(&hcrc, (uint32_t*)&buf, sizeof(buf)-sizeof(save.checksum));
+	//return HAL_CRC_Calculate(&hcrc, (uint32_t*)&save, sizeof(save));
 	//return ((((((uint32_t)save.state) << 10) ^ (save.tick)))*5 + 1)*5 + save.gen*123;
 }
 
