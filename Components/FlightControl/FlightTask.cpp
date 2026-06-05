@@ -134,20 +134,10 @@ void FlightTask::Run(void * pvParams)
 
         //Process commands in blocking mode (TODO: Change to instant-processing once complete HID/DisplayTask)
         Command cm;
-        bool res = qEvtQueue->Receive(cm);
+        bool res = qEvtQueue->ReceiveWait(cm);
         if(res)
             HandleCommand(cm);
 
-        i++;
-        if(i > 3000) {
-        	i = 0;
-        	if(rsm_->GetRocketStateAsProto() == Proto::RocketState::RS_TEST) {
-        	rsm_->TransitionState(RocketState::RS_LAUNCH);
-        	} else {
-            	rsm_->TransitionState(RocketState::RS_TEST);
-        	}
-        }
-        osDelay(1);
     }
 }
 

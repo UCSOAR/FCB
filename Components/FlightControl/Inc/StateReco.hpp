@@ -39,6 +39,8 @@ public:
 
 	bool SaveState(RocketState state);
 
+	bool ClearStates();
+
 private:
 
 	typedef uint32_t RecoSectorIndex;

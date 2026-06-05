@@ -6,14 +6,6 @@
  */
 
 
-/**
- ********************************************************************************
- * @file    ActualLoggingTask.cpp
- * @author  jaddina
- * @date    Sep 13, 2025
- * @brief
- ********************************************************************************
- */
 
 /************************************
  * INCLUDES
@@ -41,10 +33,7 @@
  * FUNCTION DECLARATIONS
  ************************************/
 
-
-uint8_t ActualLoggingTask::buf[20] = {0};
 extern CRC_HandleTypeDef hcrc;
-
 
 /************************************
  * FUNCTION DEFINITIONS
@@ -84,7 +73,6 @@ void ActualLoggingTask::Run(void * pvParams){
 
 	osDelay(5);
 	MX66L1G45G::Inst().Init();
-	//awesomeincredibleflashdriver.Init();
 	osDelay(200);
 
 	uint32_t i = TC_DATA_START_ADDR;
@@ -94,14 +82,18 @@ void ActualLoggingTask::Run(void * pvParams){
 		if(HAL_CRC_Calculate(&hcrc, (uint32_t*)&stored, sizeof(stored)-sizeof(stored.check)) == stored.check) {
 			// valid
 		} else {
-			tcCurrentAddr = i;
+			if(stored.check == 0xffffffff && stored.timestamp == 0xffffffff) {
+				tcCurrentAddr = i; //safe to continue from here
+			} else {
+				tcCurrentAddr = (i/4096+1)*4096; //start at next sector
+			}
 			break;
 		}
 		i+=sizeof(stored);
 	}
-	//tcCurrentAddr = TC_DATA_START_ADDR; // DEBUG
-	if(tcCurrentAddr == TC_DATA_START_ADDR) {
-		MX66L1G45G::Inst().EraseSector(TC_DATA_START_ADDR);
+
+	if((tcCurrentAddr%4096) == 0) {
+		MX66L1G45G::Inst().EraseSector(tcCurrentAddr);
 	}
 
 	i = PT_DATA_START_ADDR;
@@ -111,18 +103,23 @@ void ActualLoggingTask::Run(void * pvParams){
 		if(HAL_CRC_Calculate(&hcrc, (uint32_t*)&stored, sizeof(stored)-sizeof(stored.check)) == stored.check) {
 			// valid
 		} else {
-			ptCurrentAddr = i;
+			if(stored.check == 0xffffffff && stored.timestamp == 0xffffffff) {
+				ptCurrentAddr = i; //safe to continue from here
+			} else {
+				ptCurrentAddr = (i/4096+1)*4096; //start at next sector
+			}
+
 			break;
 		}
 		i+=sizeof(stored);
 	}
-	ptCurrentAddr = PT_DATA_START_ADDR; // DEBUG
-	if(ptCurrentAddr == PT_DATA_START_ADDR) {
-		MX66L1G45G::Inst().EraseSector(PT_DATA_START_ADDR);
+
+	if((ptCurrentAddr%4096) == 0) {
+		MX66L1G45G::Inst().EraseSector(ptCurrentAddr);
 	}
 	SOAR_PRINT("Recovered %d TC logs, starting logging from there\n",tcCurrentAddr/sizeof(TC_Stored));
 	SOAR_PRINT("Recovered %d PT logs, starting logging from there\n",(ptCurrentAddr-PT_DATA_START_ADDR)/sizeof(PT_Stored));
-	uint32_t last = 0;
+
 	while (1) {
 		/* Process commands in blocking mode */
 		Command cm;
@@ -158,23 +155,24 @@ void ActualLoggingTask::HandleCommand(Command& cm){
 
 			stored.check = HAL_CRC_Calculate(&hcrc, (uint32_t*)&stored, sizeof(stored)-sizeof(stored.check));
 
-
 			uint32_t lastSecctor = tcCurrentAddr / 4096;
 			uint32_t currentSector = (tcCurrentAddr+sizeof(stored)) / 4096;
 			if(currentSector > lastSecctor) {
 				MX66L1G45G::Inst().EraseSector(currentSector*4096);
 			}
 			if(MX66L1G45G::Inst().WriteData(tcCurrentAddr, (uint8_t*)&stored, sizeof(stored))) {
-			tcCurrentAddr += sizeof(stored);
-			debugLogged++;
-			if(debugLogged > 1000) {
-				uint32_t th = HAL_GetTick();
-				SOAR_PRINT("log 1000 in %dms\n",th-lastDebugP);
-				lastDebugP = th;
-				debugLogged = 0;
+				tcCurrentAddr += sizeof(stored);
+#ifdef LOGGING_DEBUG
+				debugLogged++;
+				if(debugLogged > 1000) {
+					uint32_t th = HAL_GetTick();
+					SOAR_PRINT("log 1000 in %dms\n",th-lastDebugP);
+					lastDebugP = th;
+					debugLogged = 0;
+				}
+#endif
 			}
-			}
-			//SOAR_PRINT("logged at %d\n",tcCurrentAddr);
+
 			break;
 		}
 
@@ -191,7 +189,6 @@ void ActualLoggingTask::HandleCommand(Command& cm){
 
 			stored.check = HAL_CRC_Calculate(&hcrc, (uint32_t*)&stored, sizeof(stored)-sizeof(stored.check));
 
-
 			uint32_t lastSecctor = ptCurrentAddr / 4096;
 			uint32_t currentSector = (ptCurrentAddr+sizeof(stored)) / 4096;
 			if(currentSector > lastSecctor) {
@@ -199,26 +196,87 @@ void ActualLoggingTask::HandleCommand(Command& cm){
 			}
 			if(MX66L1G45G::Inst().WriteData(ptCurrentAddr, (uint8_t*)&stored, sizeof(stored))) {
 
-			ptCurrentAddr += sizeof(stored);
-			debugLogged++;
-			if(debugLogged > 1000) {
-				uint32_t th = HAL_GetTick();
-				SOAR_PRINT("log 1000 in %dms\n",th-lastDebugP);
-				lastDebugP = th;
-				debugLogged = 0;
+				ptCurrentAddr += sizeof(stored);
+#ifdef LOGGING_DEBUG
+				debugLogged++;
+				if(debugLogged > 1000) {
+					uint32_t th = HAL_GetTick();
+					SOAR_PRINT("log 1000 in %dms\n",th-lastDebugP);
+					lastDebugP = th;
+					debugLogged = 0;
+				}
+#endif
 			}
-			}
-			//SOAR_PRINT("logged pt at %d\n",tcCurrentAddr);
+
 			break;
 		}
 
 		}
 	} else if(cm.GetCommand() == TASK_SPECIFIC_COMMAND) {
 		switch(cm.GetTaskCommand()) {
-		case LOG_STATE_RECO:
+		case LOG_STATE_RECO: {
 			RocketState state = *(RocketState*)cm.GetDataPointer();
 			StateRecoverer::Inst().SaveState(state);
 			break;
+		}
+		case CLEAR_FLASH: {
+			SOAR_PRINT("clearing...\n");
+			uint32_t i = TC_DATA_START_ADDR;
+			while(i < TC_DATA_END_ADDR) {
+				uint8_t thisPage[256];
+				MX66L1G45G::Inst().ReadData(i, thisPage, sizeof(thisPage));
+				bool empty = true;
+				for (uint16_t i = 0; i < sizeof(thisPage); i++) {
+					if(thisPage[i] != 0xff) {
+						empty = false;
+						break;
+					}
+				}
+				if(!empty) {
+					MX66L1G45G::Inst().EraseSector(i);
+					i = (i/4096+1)*4096;
+				}
+				else {
+					i += sizeof(thisPage);
+					if((i-TC_DATA_START_ADDR) % 4096 == 0) {
+						break;
+					}
+				}
+			}
+			SOAR_PRINT("we have destroyed %d sectors of tc\n",(i-TC_DATA_START_ADDR)/4096);
+			tcCurrentAddr = TC_DATA_START_ADDR;
+
+			i = PT_DATA_START_ADDR;
+			while(i < PT_DATA_END_ADDR) {
+				uint8_t thisPage[256];
+				MX66L1G45G::Inst().ReadData(i, thisPage, sizeof(thisPage));
+				bool empty = true;
+				for (uint16_t i = 0; i < sizeof(thisPage); i++) {
+					if(thisPage[i] != 0xff) {
+						empty = false;
+						break;
+					}
+				}
+				if(!empty) {
+					MX66L1G45G::Inst().EraseSector(i);
+					i = (i/4096+1)*4096;
+				}
+				else {
+					i += sizeof(thisPage);
+					if((i-PT_DATA_START_ADDR) % 4096 == 0) {
+						break;
+					}
+				}
+			}
+
+			SOAR_PRINT("we have destroyed %d sectors of pt\n",(i-PT_DATA_START_ADDR)/4096);
+
+			ptCurrentAddr = PT_DATA_START_ADDR;
+
+			StateRecoverer::Inst().ClearStates();
+
+			break;
+		}
 		}
 	}
 

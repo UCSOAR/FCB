@@ -14,7 +14,7 @@
 /************************************
  * MACROS AND DEFINES
  ************************************/
-
+#define LOGGING_DEBUG
 
 /************************************
  * TYPEDEFS
@@ -26,7 +26,8 @@
 extern QSPI_HandleTypeDef hqspi;
 
 enum LOGGING_TASK_CMDS {
-	LOG_STATE_RECO
+	LOG_STATE_RECO,
+	CLEAR_FLASH
 };
 /************************************
  * FUNCTION DECLARATIONS

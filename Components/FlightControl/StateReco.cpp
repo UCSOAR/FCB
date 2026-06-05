@@ -46,8 +46,6 @@ uint32_t StateRecoverer::GetChecksum(StateSave save) const {
 	uint8_t buf[sizeof(save)];
 	memcpy(buf,&save,sizeof(save));
 	return HAL_CRC_Calculate(&hcrc, (uint32_t*)&buf, sizeof(buf)-sizeof(save.checksum));
-	//return HAL_CRC_Calculate(&hcrc, (uint32_t*)&save, sizeof(save));
-	//return ((((((uint32_t)save.state) << 10) ^ (save.tick)))*5 + 1)*5 + save.gen*123;
 }
 
 StateRecoverer::RecoSectorIndex StateRecoverer::GetMostRecentValid() {
@@ -94,4 +92,13 @@ bool StateRecoverer::PutSave(RecoSectorIndex index, StateSave state) {
 	return MX66L1G45G::Inst().WriteData((sectorStart+index)*4096,
 			(uint8_t*)&state,
 			sizeof(state));
+}
+
+bool StateRecoverer::ClearStates() {
+	for (uint16_t i = 0; i < sectorCount; i++) {
+		if(!MX66L1G45G::Inst().EraseSector((sectorStart+i)*4096)) {
+			return false;
+		}
+	}
+	return true;
 }

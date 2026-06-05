@@ -102,11 +102,9 @@ void PressureTransducerTask::Run(void * pvParams)
 				}
 			} else {
 				DataBroker::Publish<PressureTransducerData>(data);
-
 			}
 
 			last = th;
-			//SOAR_PRINT("pt\n");
 		}
 
 		if(bigdumpi > 0 && ticksPerFlashLog >= 3) {

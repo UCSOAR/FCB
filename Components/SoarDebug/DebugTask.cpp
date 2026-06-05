@@ -18,6 +18,7 @@
 #include "GPIO.hpp"
 #include "PressureTransducerTask.hpp"
 #include "TCTask.hpp"
+#include "ActualLoggingTask.hpp"
 
 // External Tasks (to send debug commands to)
 
@@ -171,6 +172,9 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		SOAR_PRINT("Debug 'thermocouple' Sample and Output Received\n");
 		TCTask::Inst().SendCommand(Command(REQUEST_COMMAND, TC_REQUEST_NEW_SAMPLE));
 		TCTask::Inst().SendCommand(Command(REQUEST_COMMAND, TC_REQUEST_DEBUG));
+	} else if(strcmp(msg, "fclear") == 0) {
+		SOAR_PRINT("we are destroying flash now\n");
+		ActualLoggingTask::Inst().SendCommand({TASK_SPECIFIC_COMMAND,CLEAR_FLASH});
 	}
 	else
 	{
