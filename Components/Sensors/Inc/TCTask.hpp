@@ -10,6 +10,7 @@
 
 #include "Task.hpp"
 #include "MAX31856MUD+Driver.hpp"
+#include "SensorDataTypes.hpp"
 /************************************
  * MACROS AND DEFINES
  ************************************/
@@ -22,14 +23,10 @@ enum TC_TASK_COMMANDS {
     TC_REQUEST_NEW_SAMPLE,// Get a new tc sample, task will be blocked for polling time
     TC_REQUEST_TRANSMIT,    // Send the current tc data over the Radio
     TC_REQUEST_DEBUG,        // Send the current tc data over the Debug UART
+	TC_SET_FLASH_RATE
 };
 
-typedef struct
-{
-    float     temp1;
-    float 	  temp2;
-    float	  temp3;
-} ThermocoupleData;
+
 /************************************
  * CLASS DEFINITIONS
  ************************************/
@@ -61,6 +58,8 @@ class TCTask: public Task
 	    // Data
 	    ThermocoupleData* data;
 	    uint32_t timestampTC;
+
+	    uint32_t ticksPerFlashLog = 0;
 
 	private:
 		// Private Functions

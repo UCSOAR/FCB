@@ -11,13 +11,12 @@
 #include "Command.hpp"
 #include "CubeUtils.hpp"
 #include <cstring>
-#include "LoggingService.hpp"
 #include "stm32h7xx_hal.h"
-#include "FlashTask.hpp"
 #include "CANTask.hpp"
 #include "GPIO.hpp"
 #include "PressureTransducerTask.hpp"
 #include "TCTask.hpp"
+#include "ActualLoggingTask.hpp"
 
 // External Tasks (to send debug commands to)
 
@@ -102,6 +101,7 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		int32_t state = ExtractIntParameter(msg, 4);
 		if (state != ERRVAL && state > 0 && state < UINT16_MAX)
 			FlightTask::Inst().SendCommand(Command(CONTROL_ACTION, state));
+
 	}
 
 	//-- SYSTEM / CHAR COMMANDS -- (Must be last)
@@ -170,6 +170,27 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		SOAR_PRINT("Debug 'thermocouple' Sample and Output Received\n");
 		TCTask::Inst().SendCommand(Command(REQUEST_COMMAND, TC_REQUEST_NEW_SAMPLE));
 		TCTask::Inst().SendCommand(Command(REQUEST_COMMAND, TC_REQUEST_DEBUG));
+	} else if(strcmp(msg, "fclear") == 0) {
+		SOAR_PRINT("we are destroying flash now\n");
+		ActualLoggingTask::Inst().SendCommand({TASK_SPECIFIC_COMMAND,CLEAR_FLASH});
+	}
+	 else if(strcmp(msg, "dumpy") == 0) {
+		SOAR_PRINT("here it come\n");
+		ActualLoggingTask::Inst().SendCommand({TASK_SPECIFIC_COMMAND,DUMP_FLASH});
+	}else if(strncmp(msg, "log ", 4) == 0) {
+		// Get parameter and send as a control action to flight task
+		int32_t rate = ExtractIntParameter(msg, 4);
+		if (rate >= 0 && rate <= 3000) {
+			uint32_t realrate = rate;
+			Command ptcmd = {TASK_SPECIFIC_COMMAND,PT_SET_FLASH_RATE};
+			ptcmd.CopyDataToCommand((uint8_t*)&realrate, sizeof(realrate));
+			PressureTransducerTask::Inst().SendCommandReference(ptcmd);
+
+			Command tccmd = {TASK_SPECIFIC_COMMAND,TC_SET_FLASH_RATE};
+			tccmd.CopyDataToCommand((uint8_t*)&realrate, sizeof(realrate));
+			TCTask::Inst().SendCommandReference(tccmd);
+		}
+
 	}
 	else
 	{

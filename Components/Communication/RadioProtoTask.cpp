@@ -16,6 +16,7 @@
 #include "WatchdogTask.hpp"
 #include "TelemetryTask.hpp"
 #include "CANTask.hpp"
+#include "ActualLoggingTask.hpp"
 
 // TODO NEW
 //#include "FlashTask.hpp"
@@ -222,6 +223,11 @@ void RadioProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFi
     	SOAR_PRINT("airbrakes enable\n");
     	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_AIR_BRAKES_COMMAND_LOGINDEX, (uint8_t*)&cmd);
 		break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_ERASE_FLASH: {
+    	ActualLoggingTask::Inst().SendCommand({TASK_SPECIFIC_COMMAND,CLEAR_FLASH});
+    	break;
     }
     default:
         break;

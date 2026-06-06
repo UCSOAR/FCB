@@ -13,6 +13,9 @@
 #include "RocketStateMachine.hpp"
 #include "RocketStates.hpp"
 #include "SystemDefines.hpp"
+#include "ActualLoggingTask.hpp"
+#include "PressureTransducerTask.hpp"
+#include "TCTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -56,17 +59,24 @@ RocketSM::RocketSM(RocketState startingState, bool enterStartingState)
 //        SOAR_ASSERT(stateArray[i]->GetStateID() == i);
 //    }
 
+
     rs_currentState = stateArray[startingState];
+
+
 
     // If we need to run OnEnter for the starting state, do so
     if (enterStartingState) {
         rs_currentState->OnEnter();
     }
 
+
+
     SOAR_PRINT("Rocket State Machine Started in [ %s ] state\n", BaseRocketState::StateToString(rs_currentState->GetStateID()));
     // TODO NEW
     //    HDITask::Inst().SendCommand(Command(REQUEST_COMMAND, rs_currentState->GetStateID()));
 }
+
+#include "StateReco.hpp"
 
 /**
  * @brief Handles state transitions
@@ -101,6 +111,21 @@ RocketState RocketSM::TransitionState(RocketState nextState)
     rs_currentState->OnEnter();
 
     SOAR_PRINT("ROCKET STATE TRANSITION [ %s ] --> [ %s ]\n", BaseRocketState::StateToString(previousState), BaseRocketState::StateToString(rs_currentState->GetStateID()));
+
+    Command staterecocmd = {TASK_SPECIFIC_COMMAND,LOG_STATE_RECO};
+    RocketState st = rs_currentState->GetStateID();
+    staterecocmd.CopyDataToCommand((uint8_t*)&st, sizeof(st));
+    ActualLoggingTask::Inst().SendCommandReference(staterecocmd);
+
+    uint32_t flashrate = rs_currentState->GetTicksPerFlashLog();
+
+    Command ptflashratecmd = {TASK_SPECIFIC_COMMAND,PT_SET_FLASH_RATE};
+    ptflashratecmd.CopyDataToCommand((uint8_t*)&flashrate, sizeof(flashrate));
+    PressureTransducerTask::Inst().SendCommandReference(ptflashratecmd);
+
+    Command tcflashratecmd = {TASK_SPECIFIC_COMMAND,TC_SET_FLASH_RATE};
+    tcflashratecmd.CopyDataToCommand((uint8_t*)&flashrate, sizeof(flashrate));
+    TCTask::Inst().SendCommandReference(tcflashratecmd);
 
     // Return the state after the transition
     return rs_currentState->GetStateID();

@@ -78,7 +78,7 @@ constexpr uint8_t TASK_RADIO_PROTOCOL_PRIORITY = 4;
 
 // LOGGING TASK
 constexpr uint8_t TASK_LOGGING_PRIORITY = 3;
-constexpr uint8_t TASK_LOGGING_QUEUE_DEPTH_OBJS = 10;
+constexpr uint8_t TASK_LOGGING_QUEUE_DEPTH_OBJS = 50;
 constexpr uint16_t TASK_LOGGING_QUEUE_DEPTH_WORDS = 512;
 
 // FLASH TASK
@@ -97,12 +97,12 @@ constexpr uint8_t TELEMETRY_TASK_QUEUE_DEPTH_OBJS = 10;        // Size of the te
 constexpr uint16_t TELEMETRY_TASK_STACK_DEPTH_WORDS = 512;        // Size of the telemetry task stack
 
 // PRESSURE TRANSDUCER TASK
-constexpr uint8_t TASK_PRESSURE_TRANSDUCER_PRIORITY = 1;			// Priority of the pressure transducer task
+constexpr uint8_t TASK_PRESSURE_TRANSDUCER_PRIORITY = 2;			// Priority of the pressure transducer task
 constexpr uint8_t TASK_PRESSURE_TRANSDUCER_QUEUE_DEPTH_OBJS = 10;		// Size of the pressure transducer task queue
 constexpr uint16_t TASK_PRESSURE_TRANSDUCER_STACK_DEPTH_WORDS = 512;		// Size of the pressure transducer task stack
 
 // THERMOCOUPLE TASK
-constexpr uint8_t TASK_TC_PRIORITY = 1;			// Priority of the TC task
+constexpr uint8_t TASK_TC_PRIORITY = 2;			// Priority of the TC task
 constexpr uint8_t TASK_TC_QUEUE_DEPTH_OBJS = 10;		// Size of the TC task queue
 constexpr uint16_t TASK_TC_STACK_DEPTH_WORDS = 512;		// Size of the TC task stack
 

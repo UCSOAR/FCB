@@ -337,7 +337,7 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
   /** Initializes the peripherals clock
   */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_QSPI;
-    PeriphClkInitStruct.QspiClockSelection = RCC_QSPICLKSOURCE_D1HCLK;
+    PeriphClkInitStruct.QspiClockSelection = RCC_QSPICLKSOURCE_CLKP;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
       Error_Handler();
@@ -350,13 +350,14 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOD_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
     /**QUADSPI GPIO Configuration
     PE2     ------> QUADSPI_BK1_IO2
     PA1     ------> QUADSPI_BK1_IO3
     PB2     ------> QUADSPI_CLK
     PB10     ------> QUADSPI_BK1_NCS
-    PD11     ------> QUADSPI_BK1_IO0
     PD12     ------> QUADSPI_BK1_IO1
+    PC9     ------> QUADSPI_BK1_IO0
     */
     GPIO_InitStruct.Pin = GPIO_PIN_2;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -379,12 +380,19 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
     GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
+    GPIO_InitStruct.Pin = GPIO_PIN_12;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
     /* USER CODE BEGIN QUADSPI_MspInit 1 */
 
@@ -415,8 +423,8 @@ void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef* hqspi)
     PA1     ------> QUADSPI_BK1_IO3
     PB2     ------> QUADSPI_CLK
     PB10     ------> QUADSPI_BK1_NCS
-    PD11     ------> QUADSPI_BK1_IO0
     PD12     ------> QUADSPI_BK1_IO1
+    PC9     ------> QUADSPI_BK1_IO0
     */
     HAL_GPIO_DeInit(GPIOE, GPIO_PIN_2);
 
@@ -424,7 +432,9 @@ void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef* hqspi)
 
     HAL_GPIO_DeInit(GPIOB, SPI_FLASH_CS_Pin|GPIO_PIN_10);
 
-    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_11|GPIO_PIN_12);
+    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_12);
+
+    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_9);
 
     /* USER CODE BEGIN QUADSPI_MspDeInit 1 */
 
