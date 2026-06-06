@@ -9,6 +9,7 @@
 #define MAIN_SYSTEM_HPP_
 
 /* Includes  ----------------------------------------------------------------------------*/
+#define	IS_FCB
 #include "Mutex.hpp"
 // Board specific includes
 #include "stm32h7xx_hal.h"
