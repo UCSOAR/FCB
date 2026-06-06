@@ -13,7 +13,6 @@
 #include "RocketStateMachine.hpp"
 #include "RocketStates.hpp"
 #include "SystemDefines.hpp"
-#include "FlashTask.hpp"
 #include "ActualLoggingTask.hpp"
 #include "PressureTransducerTask.hpp"
 #include "TCTask.hpp"

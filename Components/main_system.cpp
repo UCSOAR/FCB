@@ -12,8 +12,6 @@
 // Tasks
 #include "UARTTask.hpp"
 #include "CubeTask.hpp"
-#include "LoggingTask.hpp"
-#include "FlashTask.hpp"
 #include "DebugTask.hpp"
 #include "FlightTask.hpp"
 #include "CANTask.hpp"
@@ -36,7 +34,7 @@ namespace Driver {
 */
 void run_main() {
     // Init Tasks
-	//WatchdogTask::Inst().InitTask();
+	WatchdogTask::Inst().InitTask();
 	UARTTask::Inst().InitTask();
 	CubeTask::Inst().InitTask();
 	FlightTask::Inst().InitTask();
@@ -46,8 +44,6 @@ void run_main() {
 	TelemetryTask::Inst().InitTask();
 	PressureTransducerTask::Inst().InitTask();
 	TCTask::Inst().InitTask();
-	//FlashTask::Inst().InitTask();
-	//LoggingTask::Inst().InitTask();
 	ActualLoggingTask::Inst().InitTask();
 
 

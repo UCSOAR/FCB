@@ -47,7 +47,7 @@ static constexpr double PRESSURE_SCALE = 1.5220883534136546;
 PressureTransducerTask::PressureTransducerTask() : Task(TASK_PRESSURE_TRANSDUCER_QUEUE_DEPTH_OBJS)
 {
 	data = (PressureTransducerData*)soar_malloc(sizeof(PressureTransducerData));
-	bigdump = (PressureTransducerData*)soar_malloc(sizeof(PressureTransducerData)*BIGDUMPSIZE);
+	bigdump = (PTRambufData*)soar_malloc(sizeof(PTRambufData)*BIGDUMPSIZE);
 }
 
 /**
@@ -78,7 +78,6 @@ void PressureTransducerTask::InitTask()
  */
 void PressureTransducerTask::Run(void * pvParams)
 {
-	uint32_t last = 0;
 	bool reporteddumpstat = false;
 	while (1) {
 		Command cm;
@@ -90,12 +89,15 @@ void PressureTransducerTask::Run(void * pvParams)
 		if(res)
 			HandleCommand(cm);
 
-		uint32_t th = HAL_GetTick();
 
-		if(th - last > ticksPerFlashLog && ticksPerFlashLog != 0) {
+		osDelay(ticksPerFlashLog);
+
+
+		if(ticksPerFlashLog != 0) {
 			SamplePressureTransducer();
+			// under 3ms per log go to ram instead
 			if(ticksPerFlashLog < 3 && bigdumpi < BIGDUMPSIZE) {
-				bigdump[bigdumpi++] = *data;
+				bigdump[bigdumpi++] = {*data,HAL_GetTick()};
 				if(!reporteddumpstat) {
 					SOAR_PRINT("we have switched to big dump, starting at %d!\n",bigdumpi);
 					reporteddumpstat = true;
@@ -103,13 +105,15 @@ void PressureTransducerTask::Run(void * pvParams)
 			} else {
 				DataBroker::Publish<PressureTransducerData>(data);
 			}
-
-			last = th;
 		}
 
-		if(bigdumpi > 0 && ticksPerFlashLog >= 3) {
-			for(uint16_t i = 0; i < 1; i++) {
-				DataBroker::Publish<PressureTransducerData>(&bigdump[--bigdumpi]);
+		// once we're over 3ms per log again (or disabled at 0ms) we can catch up to flash
+		if(bigdumpi > 0 && (ticksPerFlashLog >= 3 || ticksPerFlashLog == 0)) {
+			// do a few at once so that we're not flashing so slowly once we go back to slower speed
+			for(uint16_t i = 0; i < 5; i++) {
+				Command cm = {TASK_SPECIFIC_COMMAND,LOG_FROM_RAMBUF};
+				cm.CopyDataToCommand((uint8_t*)&bigdump[--bigdumpi], sizeof(bigdump[0]));
+				ActualLoggingTask::Inst().SendCommandReference(cm);
 				if(bigdumpi == 0) {
 					SOAR_PRINT("done catching up!\n");
 					break;
@@ -121,9 +125,6 @@ void PressureTransducerTask::Run(void * pvParams)
 			}
 
 		}
-
-		//        SamplePressureTransducer();
-		//        osDelay(500);
 	}
 }
 

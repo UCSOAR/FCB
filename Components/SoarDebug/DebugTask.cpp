@@ -11,9 +11,7 @@
 #include "Command.hpp"
 #include "CubeUtils.hpp"
 #include <cstring>
-#include "LoggingService.hpp"
 #include "stm32h7xx_hal.h"
-#include "FlashTask.hpp"
 #include "CANTask.hpp"
 #include "GPIO.hpp"
 #include "PressureTransducerTask.hpp"

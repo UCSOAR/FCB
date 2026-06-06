@@ -68,7 +68,12 @@ protected:
 
     uint32_t ticksPerFlashLog = 0;
 
-    PressureTransducerData* bigdump;
+    struct __attribute__((packed)) PTRambufData {
+    	PressureTransducerData data;
+    	uint32_t timestamp;
+    };
+
+    PTRambufData* bigdump;
     uint32_t bigdumpi;
 
 private:
