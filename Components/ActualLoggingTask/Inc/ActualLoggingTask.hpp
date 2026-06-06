@@ -16,6 +16,8 @@
  ************************************/
 #define LOGGING_DEBUG
 
+#define FPRINT(f) (int)(f), (int)(fabsf((f) - (int)(f)) * 100.0f)
+
 /************************************
  * TYPEDEFS
  ************************************/
@@ -27,7 +29,8 @@ extern QSPI_HandleTypeDef hqspi;
 
 enum LOGGING_TASK_CMDS {
 	LOG_STATE_RECO,
-	CLEAR_FLASH
+	CLEAR_FLASH,
+	DUMP_FLASH
 };
 /************************************
  * FUNCTION DECLARATIONS
@@ -81,6 +84,10 @@ class ActualLoggingTask: public Task
 			uint32_t timestamp;
 			uint32_t check;
 		};
+
+		uint32_t flashTimestampOffset = 0;
+
+
 
 //		static uint8_t firstAlt;
 };

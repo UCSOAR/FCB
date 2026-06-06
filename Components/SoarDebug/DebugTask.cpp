@@ -176,6 +176,24 @@ void DebugTask::HandleDebugMessage(const char *msg)
 		SOAR_PRINT("we are destroying flash now\n");
 		ActualLoggingTask::Inst().SendCommand({TASK_SPECIFIC_COMMAND,CLEAR_FLASH});
 	}
+	 else if(strcmp(msg, "dumpy") == 0) {
+		SOAR_PRINT("here it come\n");
+		ActualLoggingTask::Inst().SendCommand({TASK_SPECIFIC_COMMAND,DUMP_FLASH});
+	}else if(strncmp(msg, "log ", 4) == 0) {
+		// Get parameter and send as a control action to flight task
+		int32_t rate = ExtractIntParameter(msg, 4);
+		if (rate >= 0 && rate <= 3000) {
+			uint32_t realrate = rate;
+			Command ptcmd = {TASK_SPECIFIC_COMMAND,PT_SET_FLASH_RATE};
+			ptcmd.CopyDataToCommand((uint8_t*)&realrate, sizeof(realrate));
+			PressureTransducerTask::Inst().SendCommandReference(ptcmd);
+
+			Command tccmd = {TASK_SPECIFIC_COMMAND,TC_SET_FLASH_RATE};
+			tccmd.CopyDataToCommand((uint8_t*)&realrate, sizeof(realrate));
+			TCTask::Inst().SendCommandReference(tccmd);
+		}
+
+	}
 	else
 	{
 	// Single character command, or unknown command
