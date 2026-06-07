@@ -28,7 +28,7 @@
  ************************************/
 static constexpr uint32_t PT_ADC_POLL_TIMEOUT_MS = 50;
 // TODO NEW JUST EXPERIMENT SHOULD BE 3.3V
-static constexpr double ADC_VREF = 3.289;
+static constexpr double ADC_VREF = 3.293;
 static constexpr double ADC_MAX_16BIT = 65535.0;
 // Same scale factor from the old F405 code
 static constexpr double PRESSURE_SCALE = 1.5220883534136546;
