@@ -17,11 +17,6 @@
 #include "RocketStateMachine.hpp"
 #include "RadioProtoTask.hpp"
 
-// TODO NEW
-//#include "RadioProtocolTask.hpp"
-//#include "SPIFlash.hpp"
-//#include "SystemStorage.hpp"
-
 /************************************
  * PRIVATE MACROS AND DEFINES
  ************************************/
@@ -107,7 +102,6 @@ void FlightTask::Run(void * pvParams)
     RocketState recovered = StateRecoverer::Inst().GetMostRecentState();
     if(recovered != RocketState::RS_NONE) {
     	SOAR_PRINT("Recovered state %d\n",recovered);
-
     }
 
     rsm_ = new RocketSM(recovered == RocketState::RS_NONE ? RocketState::RS_ABORT : recovered, true);

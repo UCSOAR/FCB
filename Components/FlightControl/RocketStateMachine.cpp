@@ -69,7 +69,15 @@ RocketSM::RocketSM(RocketState startingState, bool enterStartingState)
         rs_currentState->OnEnter();
     }
 
+    uint32_t flashrate = rs_currentState->GetTicksPerFlashLog();
 
+	Command ptflashratecmd = {TASK_SPECIFIC_COMMAND,PT_SET_FLASH_RATE};
+	ptflashratecmd.CopyDataToCommand((uint8_t*)&flashrate, sizeof(flashrate));
+	PressureTransducerTask::Inst().SendCommandReference(ptflashratecmd);
+
+	Command tcflashratecmd = {TASK_SPECIFIC_COMMAND,TC_SET_FLASH_RATE};
+	tcflashratecmd.CopyDataToCommand((uint8_t*)&flashrate, sizeof(flashrate));
+	TCTask::Inst().SendCommandReference(tcflashratecmd);
 
     SOAR_PRINT("Rocket State Machine Started in [ %s ] state\n", BaseRocketState::StateToString(rs_currentState->GetStateID()));
     // TODO NEW
