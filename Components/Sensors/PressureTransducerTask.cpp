@@ -22,6 +22,7 @@
 /************************************
  * PRIVATE MACROS AND DEFINES
  ************************************/
+#define MIN(a,b) (a > b ? b : a)
 
 /************************************
  * VARIABLES
@@ -79,6 +80,8 @@ void PressureTransducerTask::InitTask()
 void PressureTransducerTask::Run(void * pvParams)
 {
 	bool reporteddumpstat = false;
+	uint32_t last = HAL_GetTick();
+
 	while (1) {
 		Command cm;
 
@@ -90,40 +93,44 @@ void PressureTransducerTask::Run(void * pvParams)
 			HandleCommand(cm);
 
 
-		osDelay(ticksPerFlashLog);
+		osDelay(MIN(ticksPerFlashLog,300));
 
+		uint32_t th = HAL_GetTick();
 
-		if(ticksPerFlashLog != 0) {
-			SamplePressureTransducer();
-			// under 3ms per log go to ram instead
-			if(ticksPerFlashLog < 3 && bigdumpi < BIGDUMPSIZE) {
-				bigdump[bigdumpi++] = {*data,HAL_GetTick()};
-				if(!reporteddumpstat) {
-					SOAR_PRINT("we have switched to big dump, starting at %d!\n",bigdumpi);
-					reporteddumpstat = true;
-				}
-			} else {
-				DataBroker::Publish<PressureTransducerData>(data);
-			}
-		}
+		if(th - last > ticksPerFlashLog) {
+			last = th;
+			if(ticksPerFlashLog != 0) {
 
-		// once we're over 3ms per log again (or disabled at 0ms) we can catch up to flash
-		if(bigdumpi > 0 && (ticksPerFlashLog >= 3 || ticksPerFlashLog == 0)) {
-			// do a few at once so that we're not flashing so slowly once we go back to slower speed
-			for(uint16_t i = 0; i < 5; i++) {
-				Command cm = {TASK_SPECIFIC_COMMAND,LOG_FROM_RAMBUF};
-				cm.CopyDataToCommand((uint8_t*)&bigdump[--bigdumpi], sizeof(bigdump[0]));
-				ActualLoggingTask::Inst().SendCommandReference(cm);
-				if(bigdumpi == 0) {
-					SOAR_PRINT("done catching up!\n");
-					break;
+				SamplePressureTransducer();
+				// under 3ms per log go to ram instead
+				if(ticksPerFlashLog < 3 && bigdumpi < BIGDUMPSIZE) {
+					bigdump[bigdumpi++] = {*data,HAL_GetTick()};
+					if(!reporteddumpstat) {
+						SOAR_PRINT("we have switched to big dump, starting at %d!\n",bigdumpi);
+						reporteddumpstat = true;
+					}
+				} else {
+					DataBroker::Publish<PressureTransducerData>(data);
 				}
 			}
-			if(reporteddumpstat) {
-				SOAR_PRINT("catching up... (%d)\n",bigdumpi);
-				reporteddumpstat = false;
-			}
 
+			// once we're over 3ms per log again (or disabled at 0ms) we can catch up to flash
+			if(bigdumpi > 0 && (ticksPerFlashLog >= 3 || ticksPerFlashLog == 0)) {
+				// do a few at once so that we're not flashing so slowly once we go back to slower speed
+				for(uint16_t i = 0; i < 5; i++) {
+					Command cm = {TASK_SPECIFIC_COMMAND,LOG_FROM_RAMBUF};
+					cm.CopyDataToCommand((uint8_t*)&bigdump[--bigdumpi], sizeof(bigdump[0]));
+					ActualLoggingTask::Inst().SendCommandReference(cm);
+					if(bigdumpi == 0) {
+						SOAR_PRINT("done catching up!\n");
+						break;
+					}
+				}
+				if(reporteddumpstat) {
+					SOAR_PRINT("catching up... (%d)\n",bigdumpi);
+					reporteddumpstat = false;
+				}
+			}
 		}
 	}
 }

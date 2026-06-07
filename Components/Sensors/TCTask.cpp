@@ -25,7 +25,8 @@
 /************************************
  * PRIVATE MACROS AND DEFINES
  ************************************/
-
+#define MAX(a,b) (a > b ? a : b)
+#define MIN(a,b) (a > b ? b : a)
 /************************************
  * VARIABLES
  ************************************/
@@ -84,6 +85,7 @@ void TCTask::Run(void * pvParams){
 	TCDriver1.SetCR0(0b10000000);
 	TCDriver2.SetCR0(0b10000000);
 	TCDriver3.SetCR0(0b10000000);
+	uint32_t last = HAL_GetTick();
 
 	while (1) {
 		/* Process commands in blocking mode */
@@ -93,10 +95,14 @@ void TCTask::Run(void * pvParams){
 		if(res){
 			HandleCommand(cm);
 		}
-#define MAX(a,b) (a > b ? a : b)
-		osDelay(MAX(ticksPerFlashLog,100));
 
-		if(ticksPerFlashLog != 0) {
+		// lock between 100 and 300
+		osDelay(MIN(MAX(ticksPerFlashLog,100),300));
+
+		uint32_t th = HAL_GetTick();
+
+		if(th - last > ticksPerFlashLog && ticksPerFlashLog != 0) {
+			last = th;
 			SampleTC();
 			DataBroker::Publish<ThermocoupleData>(data);
 			//SOAR_PRINT("tc\n");
