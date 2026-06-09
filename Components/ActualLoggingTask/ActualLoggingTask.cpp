@@ -97,6 +97,10 @@ void ActualLoggingTask::Run(void * pvParams){
 		MX66L1G45G::Inst().EraseSector(tcCurrentAddr);
 	}
 
+	if(tcCurrentAddr < TC_DATA_START_ADDR) {
+		tcCurrentAddr = i;
+	}
+
 	i = PT_DATA_START_ADDR;
 	while(i < PT_DATA_END_ADDR - sizeof(PT_Stored)) {
 		PT_Stored stored;
@@ -116,6 +120,10 @@ void ActualLoggingTask::Run(void * pvParams){
 			flashTimestampOffset = stored.timestamp;
 		}
 		i+=sizeof(stored);
+	}
+
+	if(ptCurrentAddr < PT_DATA_START_ADDR) {
+		ptCurrentAddr = i;
 	}
 
 	if((ptCurrentAddr%4096) == 0) {
