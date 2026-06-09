@@ -229,6 +229,19 @@ void RadioProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFi
     	ActualLoggingTask::Inst().SendCommand({TASK_SPECIFIC_COMMAND,CLEAR_FLASH});
     	break;
     }
+
+//    case [proto frequency command]: {
+//    	RPB_IRCTRAMP_SET_COMMAND cmd;
+//    	cmd.setFreq = true;
+//    	cmd.setPower = false;
+//    	cmd.frequency = [from proto, is an enum]
+//
+//    	SOAR_PRINT("irc cmd\n");
+//    	CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_IRCTRAMP_SET_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+//		break;
+//    }
+
+//    repeat above for power
     default:
         break;
     }
