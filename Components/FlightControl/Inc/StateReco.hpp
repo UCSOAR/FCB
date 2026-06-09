@@ -13,7 +13,7 @@
 
 #define STATE_RECO_INVALID_IDX (sectorCount+1)
 #define STATE_RECO_INVALID_GEN (0xffffffff)
-#define STATE_RECO_SECTOR_START (0x00800000 / 4096)
+#define STATE_RECO_SECTOR_START (0x03ff0000 / 4096)
 #define STATE_RECO_SECTOR_COUNT (2)
 
 class StateRecoverer {
