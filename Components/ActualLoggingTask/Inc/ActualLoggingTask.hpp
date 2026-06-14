@@ -63,10 +63,10 @@ class ActualLoggingTask: public Task
 		static uint8_t buf[20];
 
 		constexpr static uint32_t TC_DATA_START_ADDR = 0x00000000;
-		constexpr static uint32_t TC_DATA_END_ADDR   = 0x003fffff;
+		constexpr static uint32_t TC_DATA_END_ADDR   = 0x00ffffff;
 
-		constexpr static uint32_t PT_DATA_START_ADDR = 0x00400000;
-		constexpr static uint32_t PT_DATA_END_ADDR   = 0x007fffff;
+		constexpr static uint32_t PT_DATA_START_ADDR = 0x01000000;
+		constexpr static uint32_t PT_DATA_END_ADDR   = 0x03f00000;
 
 		uint32_t tcCurrentAddr = 0;
 		uint32_t ptCurrentAddr = 0;
