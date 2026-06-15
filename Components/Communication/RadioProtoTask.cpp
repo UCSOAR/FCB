@@ -229,6 +229,208 @@ void RadioProtocolTask::HandleProtobufCommandMessage(EmbeddedProto::ReadBufferFi
     	ActualLoggingTask::Inst().SendCommand({TASK_SPECIFIC_COMMAND,CLEAR_FLASH});
     	break;
     }
+
+    case Proto::FcbCommand::Command::RSC_CAM1_POWER_BUTTON: {
+
+		RPB_CAMERA_SIMULATE_BUTTON_COMMAND cmd;
+		cmd.button = 0x01;
+		cmd.cam = 0;
+		SOAR_PRINT("cam1 power button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SIMULATE_BUTTON_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM2_POWER_BUTTON: {
+
+		RPB_CAMERA_SIMULATE_BUTTON_COMMAND cmd;
+		cmd.button = 0x01;
+		cmd.cam = 1;
+		SOAR_PRINT("cam2 power button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SIMULATE_BUTTON_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM3_POWER_BUTTON: {
+
+		RPB_CAMERA_SIMULATE_BUTTON_COMMAND cmd;
+		cmd.button = 0x01;
+		cmd.cam = 2;
+		SOAR_PRINT("cam3 power button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SIMULATE_BUTTON_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM1_WIFI_BUTTON: {
+
+		RPB_CAMERA_SIMULATE_BUTTON_COMMAND cmd;
+		cmd.button = 0x00;
+		cmd.cam = 0;
+		SOAR_PRINT("cam1 wifi button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SIMULATE_BUTTON_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM2_WIFI_BUTTON: {
+
+		RPB_CAMERA_SIMULATE_BUTTON_COMMAND cmd;
+		cmd.button = 0x00;
+		cmd.cam = 1;
+		SOAR_PRINT("cam2 wifi button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SIMULATE_BUTTON_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM3_WIFI_BUTTON: {
+
+		RPB_CAMERA_SIMULATE_BUTTON_COMMAND cmd;
+		cmd.button = 0x00;
+		cmd.cam = 2;
+		SOAR_PRINT("cam3 wifi button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_SIMULATE_BUTTON_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM1_REC_START: {
+
+		RPB_CAMERA_RECORDING_COMMAND cmd;
+		cmd.record = true;
+		cmd.camera = 0;
+		SOAR_PRINT("cam1 record start button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_RECORDING_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM2_REC_START: {
+
+		RPB_CAMERA_RECORDING_COMMAND cmd;
+		cmd.record = true;
+		cmd.camera = 1;
+		SOAR_PRINT("cam2 record start button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_RECORDING_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM3_REC_START: {
+
+		RPB_CAMERA_RECORDING_COMMAND cmd;
+		cmd.record = true;
+		cmd.camera = 2;
+		SOAR_PRINT("cam3 record start button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_RECORDING_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM1_REC_STOP: {
+
+		RPB_CAMERA_RECORDING_COMMAND cmd;
+		cmd.record = false;
+		cmd.camera = 0;
+		SOAR_PRINT("cam1 record stop button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_RECORDING_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM2_REC_STOP: {
+
+		RPB_CAMERA_RECORDING_COMMAND cmd;
+		cmd.record = false;
+		cmd.camera = 1;
+		SOAR_PRINT("cam2 record stop button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_RECORDING_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM3_REC_STOP: {
+
+		RPB_CAMERA_RECORDING_COMMAND cmd;
+		cmd.record = false;
+		cmd.camera = 2;
+		SOAR_PRINT("cam3 record stop button\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAMERA_RECORDING_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM_TX_ON: {
+
+		RPB_CAM_TX_CONTROL_COMMAND cmd;
+		cmd.fieldToSet = cmd.ENABLED;
+		cmd.enabled = true;
+		SOAR_PRINT("cam tx on\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAM_TX_CONTROL_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM_TX_OFF: {
+
+		RPB_CAM_TX_CONTROL_COMMAND cmd;
+		cmd.fieldToSet = cmd.ENABLED;
+		cmd.enabled = false;
+		SOAR_PRINT("cam tx off\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAM_TX_CONTROL_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM_TX_FREQ_1258: {
+
+		RPB_CAM_TX_CONTROL_COMMAND cmd;
+		cmd.fieldToSet = cmd.FREQUENCY;
+		cmd.freq = 1258;
+		SOAR_PRINT("cam freq 1258\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAM_TX_CONTROL_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM_TX_FREQ_1280: {
+
+		RPB_CAM_TX_CONTROL_COMMAND cmd;
+		cmd.fieldToSet = cmd.FREQUENCY;
+		cmd.freq = 1280;
+		SOAR_PRINT("cam freq 1280\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAM_TX_CONTROL_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM_TX_POWER_25: {
+
+		RPB_CAM_TX_CONTROL_COMMAND cmd;
+		cmd.fieldToSet = cmd.POWER;
+		cmd.power = 25;
+		SOAR_PRINT("cam power 25mw\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAM_TX_CONTROL_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM_TX_POWER_200: {
+
+		RPB_CAM_TX_CONTROL_COMMAND cmd;
+		cmd.fieldToSet = cmd.POWER;
+		cmd.power = 200;
+		SOAR_PRINT("cam power 200mw\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAM_TX_CONTROL_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM_TX_POWER_1: {
+
+		RPB_CAM_TX_CONTROL_COMMAND cmd;
+		cmd.fieldToSet = cmd.POWER;
+		cmd.power = 1000;
+		SOAR_PRINT("cam power 1w\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAM_TX_CONTROL_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+    case Proto::FcbCommand::Command::RSC_CAM_TX_POWER_4: {
+
+		RPB_CAM_TX_CONTROL_COMMAND cmd;
+		cmd.fieldToSet = cmd.POWER;
+		cmd.power = 4000;
+		SOAR_PRINT("cam power 4w\n");
+		CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_RPB, _RPB_CAM_TX_CONTROL_COMMAND_LOGINDEX, (uint8_t*)&cmd);
+    	break;
+    }
+
+
     default:
         break;
     }
