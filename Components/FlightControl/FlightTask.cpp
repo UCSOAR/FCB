@@ -186,7 +186,7 @@ void FlightTask::SendRocketState()
    // Also send a simple CAN rocket-state to the DAQ: 1 == FILL, 2 == TOUCHDOWN
    uint8_t canState = 0;
    Proto::RocketState protoState = rsm_->GetRocketStateAsProto();
-   if (protoState == Proto::RocketState::RS_FILL) {
+   if (protoState == Proto::RocketState::RS_ARM) {
        canState = 1;
    } else if (protoState == Proto::RocketState::RS_TOUCHDOWN) {
        canState = 2;
