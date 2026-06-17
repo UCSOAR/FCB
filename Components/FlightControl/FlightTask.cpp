@@ -16,6 +16,7 @@
 #include "TimerTransitions.hpp"
 #include "RocketStateMachine.hpp"
 #include "RadioProtoTask.hpp"
+#include "CANTask.hpp"
 
 /************************************
  * PRIVATE MACROS AND DEFINES
@@ -181,4 +182,21 @@ void FlightTask::SendRocketState()
 
    // Send the control message
    RadioProtocolTask::SendProtobufMessage(writeBuffer, Proto::MessageID::MSG_CONTROL);
+
+   // Also send a simple CAN rocket-state to the DAQ: 1 == FILL, 2 == TOUCHDOWN
+   uint8_t canState = 0;
+   Proto::RocketState protoState = rsm_->GetRocketStateAsProto();
+   if (protoState == Proto::RocketState::RS_FILL) {
+       canState = 1;
+   } else if (protoState == Proto::RocketState::RS_TOUCHDOWN) {
+       canState = 2;
+   }
+
+   if (canState != 0) {
+       DAQ_ROCKET_STATE st;
+       st.state = canState;
+       // Send to DAQ by log index
+       CANTask::Inst().SendCANMessageToDaughter(CAN_ROCKET_TARGET_DAQ, _DAQ_ROCKET_STATE_LOGINDEX, (uint8_t*)&st);
+       SOAR_PRINT("FlightTask CAN | Sent rocket state %u to DAQ\n", (unsigned int)canState);
+   }
 }
