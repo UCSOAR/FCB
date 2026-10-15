@@ -51,13 +51,15 @@ STM32L152-Discovery.elf.launch
 
 # IDE
 .metadata
-.settings
+.settings/
 [Rr]elease
 [Dd]ebug
 *.launch
 Application/
 Debug/
+graphify-out/
+tasks/
 
 # VS2022
-.vs/*
-.vscode/*
+.vs/
+.vscode/
