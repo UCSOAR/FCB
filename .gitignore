@@ -57,9 +57,13 @@ STM32L152-Discovery.elf.launch
 *.launch
 Application/
 Debug/
-graphify-out/
-tasks/
 
 # VS2022
 .vs/
 .vscode/
+
+# Tests
+graphify-out/
+tasks/
+tmp/
+output/
