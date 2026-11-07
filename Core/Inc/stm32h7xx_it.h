@@ -56,6 +56,7 @@ void FDCAN1_IT0_IRQHandler(void);
 void TIM2_IRQHandler(void);
 void USART1_IRQHandler(void);
 void USART2_IRQHandler(void);
+void UART7_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

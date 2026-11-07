@@ -36,10 +36,12 @@ class UARTDriver;
 namespace Driver {
     extern UARTDriver usart1;
     extern UARTDriver usart2;
+    extern UARTDriver uart7;
 }
 namespace UART {
     constexpr UARTDriver* Radio = &Driver::usart2;
     constexpr UARTDriver* Debug = &Driver::usart1;
+    constexpr UARTDriver* ATB = &Driver::uart7;
 }
 
 

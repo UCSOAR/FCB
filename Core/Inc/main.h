@@ -84,7 +84,7 @@ void Error_Handler(void);
 #define PT2_GPIO_Port GPIOC
 #define SPI_FLASH_CS_Pin GPIO_PIN_2
 #define SPI_FLASH_CS_GPIO_Port GPIOB
-#define BUZZER_Pin GPIO_PIN_7
+#define BUZZER_Pin GPIO_PIN_10
 #define BUZZER_GPIO_Port GPIOE
 #define TC2CS_Pin GPIO_PIN_12
 #define TC2CS_GPIO_Port GPIOB
