@@ -32,6 +32,8 @@ bool MX66L1G45G::Init() {
     if (hqspi_ == nullptr) return false;
 
     HAL_GPIO_WritePin(FLASH_RESET_GPIO_Port, FLASH_RESET_Pin, GPIO_PIN_SET);
+    // Allow flash RESET# recovery before the first command.
+    HAL_Delay(1);
 
     if (!ReadID(&id, &manid)) return false;
 

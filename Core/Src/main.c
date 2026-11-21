@@ -870,13 +870,19 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOE, FLASH_RESET_Pin|VENT_Pin|HEATER_Pin|BUZZER_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, BARO11_CS_Pin|TC1CS_Pin|CAN_STANDBY_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, BARO11_CS_Pin|CAN_STANDBY_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(TC2CS_GPIO_Port, TC2CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(TC1CS_GPIO_Port, TC1CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, TC3CS_Pin|GPIO_PIN_7, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(TC2CS_GPIO_Port, TC2CS_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(TC3CS_GPIO_Port, TC3CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : FLASH_RESET_Pin VENT_Pin HEATER_Pin BUZZER_Pin */
   GPIO_InitStruct.Pin = FLASH_RESET_Pin|VENT_Pin|HEATER_Pin|BUZZER_Pin;
